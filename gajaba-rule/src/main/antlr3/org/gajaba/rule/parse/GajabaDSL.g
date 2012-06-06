@@ -4,7 +4,8 @@ options { output=AST; }
 
 tokens {
 	DOC='doc';
-	RULE='rule';
+	INPUT_VAR='input';
+	STATE_VAR='state';
 }
 
 @header {
@@ -15,18 +16,21 @@ package org.gajaba.rule.parse;
 package org.gajaba.rule.parse;
 }
 
-dsl_doc	:	(dsl_rule ';')+ -> ^('doc' dsl_rule+);
+dsl_doc       :   (dsl_rule ';')+ -> ^('doc' dsl_rule+);
 
-dsl_rule	:	leftvar=dsl_var dsl_op rightvar=dsl_var -> ^(dsl_op $leftvar $rightvar);
+dsl_rule      :   leftvar=dsl_var dsl_op rightvar=dsl_var -> ^(dsl_op $leftvar $rightvar);
 
-dsl_var	:	ID;
+dsl_var       :   dsl_var_input | dsl_var_state;
 
-dsl_op	:	OP;
+dsl_var_input :   '@' ID -> ^('input' ID);
 
-OP	:	'>' | '=';
+dsl_var_state :   ID -> ^('state' ID);
 
-ID	:	 ('a'..'z'|'A'..'Z')+ ;
+dsl_op	      :   OP;
 
+OP            :   '>' | '=';
+
+ID            :   ('a'..'z'|'A'..'Z')+ ;
 
 
 

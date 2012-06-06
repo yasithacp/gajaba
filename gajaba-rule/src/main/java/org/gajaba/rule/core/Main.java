@@ -4,17 +4,29 @@ import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
 import org.gajaba.rule.parse.*;
 
+import javax.script.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class Main {
     public static void main(String[] args) throws Exception {
-        String src = "a=b;x>d;";
-        new GajabaDSLLexer(new ANTLRStringStream(src))  ;
-        GajabaDSLLexer lex = new GajabaDSLLexer(new ANTLRStringStream(src));
+        String src = "@a=b;x>d;";
+        ScriptEngine engine = new DSLEngine();
 
-        GajabaDSLParser parser = new GajabaDSLParser(new CommonTokenStream(lex));
-        GajabaDSLParser.dsl_doc_return root = parser.dsl_doc();
-        Tree rootTree = (Tree) root.getTree();
-
-        System.out.println(rootTree.getChild(0).getType());
+        try {
+            Compilable compiler = (Compilable) engine;
+            CompiledScript compiledScript = compiler.compile(src);
+//            Bindings bindings = new SimpleBindings();
+//            bindings.put("a", new Boolean(true));
+//            bindings.put("b", new Boolean(true));
+//            Object answer = compiledScript.eval(bindings);
+//            System.out.println(answer);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
     }
+
 }
