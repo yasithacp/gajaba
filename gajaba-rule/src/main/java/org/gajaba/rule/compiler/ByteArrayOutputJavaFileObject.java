@@ -8,15 +8,15 @@ import java.net.URI;
 
 public class ByteArrayOutputJavaFileObject extends SimpleJavaFileObject {
 
-	private ByteArrayOutputStream out;
-	
-	public ByteArrayOutputJavaFileObject(URI uri) {
-		super(uri, JavaFileObject.Kind.CLASS);
-		out = new ByteArrayOutputStream();
-	}
+    private ByteArrayOutputStream out;
 
-	@Override
-	public OutputStream openOutputStream() {
-		return out;
-	}
+    public ByteArrayOutputJavaFileObject(URI uri) {
+        super(uri, JavaFileObject.Kind.CLASS);
+        out = new ByteArrayOutputStream();
+    }
+
+    @Override
+    public OutputStream openOutputStream() {
+        return out;
+    }
 }

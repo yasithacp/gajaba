@@ -3,7 +3,10 @@ package org.gajaba.rule.core;
 
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.Tree;
+import org.gajaba.rule.compiler.GajabaDSLCompliedScript;
 import org.gajaba.rule.compiler.MemoryJavaFileManager;
+import org.gajaba.rule.compiler.MemoryJavaFileManagerClassLoader;
+import org.gajaba.rule.compiler.SourceGenerator;
 import org.gajaba.rule.parse.GajabaDSLLexer;
 import org.gajaba.rule.parse.GajabaDSLParser;
 
@@ -11,14 +14,11 @@ import javax.script.*;
 import javax.tools.*;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.Writer;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.Method;
+import java.util.*;
 
-public class DSLEngine extends AbstractScriptEngine implements Compilable {
+public class DSLEngine extends AbstractScriptEngine implements Compilable, Invocable {
 
 
     public static final String GENARATED_CLASS_NAME = "org.gajaba.rule.gen.CompiledDSLScript";
@@ -64,41 +64,69 @@ public class DSLEngine extends AbstractScriptEngine implements Compilable {
         return compile(new ANTLRStringStream(script));
     }
 
+    @Override
+    public Object invokeMethod(Object thiz, String name, Object... args) throws ScriptException, NoSuchMethodException {
+        return null;//TODO
+    }
+
+    @Override
+    public <T> T getInterface(Class<T> clasz) {
+        return null;//TODO
+    }
+
+    @Override
+    public <T> T getInterface(Object thiz, Class<T> clasz) {
+        return null;//TODO
+    }
+
+
     private CompiledScript compile(CharStream stream) throws ScriptException {
         GajabaDSLLexer lex = new GajabaDSLLexer(stream);
         GajabaDSLParser parser = new GajabaDSLParser(new CommonTokenStream(lex));
         try {
             GajabaDSLParser.dsl_doc_return root = parser.dsl_doc();
             Tree rootTree = (Tree) root.getTree();
-            Set<Tree> variables = getVariables(rootTree);
 
-            System.out.println(variables);
-            compileJavaCode("").call();
-            return null;
+            SourceGenerator generator = new SourceGenerator();
+
+            JavaCompiler.CompilationTask compilationTask = compileJavaCode(generator.generate(rootTree));
+            if (compilationTask.call()) {
+                return new GajabaDSLCompliedScript( this,generator.getVariables());
+            } else {
+                System.out.println("error in compiling");
+                return null;
+            }
         } catch (RecognitionException e) {
             throw new ScriptException(e);
         }
     }
 
 
-    private static Set<Tree> getVariables(Tree ast) {
-        HashSet<Tree> vars = new HashSet<Tree>();
-        return getVariables(vars, ast);
+    public Object invokeFunction(String name, Class classes[], Object[] args) throws ScriptException, NoSuchMethodException {
+        MemoryJavaFileManagerClassLoader classLoader = new MemoryJavaFileManagerClassLoader(fileManager);
+        try {
+            Class compiledClass = classLoader.loadClass(GENARATED_CLASS_NAME);
+            Method method = compiledClass.getMethod(name, classes);
+            method.setAccessible(true);
+            return method.invoke(null, args);
+        } catch (ClassNotFoundException classNotFoundEx) {
+            throw new NoSuchMethodException();
+        } catch (NoSuchMethodException noSuchMethodEx) {
+            throw noSuchMethodEx;
+        } catch (Exception e) {
+            throw new ScriptException(e);
+        }
     }
 
-    private static Set<Tree> getVariables(Set<Tree> vars, Tree ast) {
-        int childCount = ast.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            Tree child = ast.getChild(i);
-            int type = ast.getType();
-            if (type == GajabaDSLLexer.INPUT_VAR || type == GajabaDSLLexer.STATE_VAR) {
-                vars.add(child);
-            } else {
-                getVariables(vars, child);
-            }
+    @Override
+    public Object invokeFunction(String name, Object... args) throws ScriptException, NoSuchMethodException {
+        Class classes[] = new Class[args.length];
+        for (int i = 0; i < args.length; i++) {
+            classes[i] = args[i].getClass();
         }
-        return vars;
+        return invokeFunction(name, classes, args);
     }
+
 
 
     private JavaCompiler.CompilationTask compileJavaCode(String javaCode) {
@@ -110,6 +138,7 @@ public class DSLEngine extends AbstractScriptEngine implements Compilable {
             Writer inputWriter = inputFileObj.openWriter();
             inputWriter.write(javaCode);
         } catch (IOException e) {
+            //we are writing to memory, io error is unlikely.
         }
 
         List<JavaFileObject> compilationUnits = Arrays.asList(inputFileObj);

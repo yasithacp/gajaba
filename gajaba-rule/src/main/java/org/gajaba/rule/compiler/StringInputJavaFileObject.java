@@ -2,16 +2,18 @@ package org.gajaba.rule.compiler;
 
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
-import java.io.*;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URI;
 import java.nio.CharBuffer;
 
 
 public class StringInputJavaFileObject extends SimpleJavaFileObject {
 
-	private StringWriter writer = new StringWriter();
+    private StringWriter writer = new StringWriter();
 
-	public StringInputJavaFileObject(URI uri) {
+    public StringInputJavaFileObject(URI uri) {
         super(uri, JavaFileObject.Kind.SOURCE);
     }
 
