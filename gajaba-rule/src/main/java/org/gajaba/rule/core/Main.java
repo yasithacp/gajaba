@@ -1,14 +1,20 @@
 package org.gajaba.rule.core;
 
+
+import org.apache.cassandra.db.Table;
+import org.apache.cassandra.service.StorageService;
+
 import javax.script.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class Main {
     public static void main(String[] args) throws Exception {
         String src = "@ip=serverIp;";
         ScriptEngine engine = new DSLEngine();
+
 
         try {
             Compilable compiler = (Compilable) engine;
