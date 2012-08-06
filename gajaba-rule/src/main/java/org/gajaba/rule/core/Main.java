@@ -3,11 +3,11 @@ package org.gajaba.rule.core;
 import com.sun.enterprise.ee.cms.core.GMSException;
 import org.gajaba.rule.shoalDSC.SimpleShoalGMSSample;
 
-import javax.script.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
+//import javax.script.*;
+//import java.util.Arrays;
+//import java.util.HashMap;
+//import java.util.Map;
+//import java.util.logging.Level;
 
 
 public class Main {

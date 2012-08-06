@@ -23,15 +23,20 @@ public class SimpleShoalGMSSample implements CallBack{
     public void runSimpleSample() throws GMSException {
         logger.log(Level.INFO, "Starting SimpleShoalGMSSample....");
 
-        final String serverName = "server"+System.currentTimeMillis();
-        final String groupName = "Group1";
+        final String serverName = "server" +System.currentTimeMillis();
+        final String groupName = "Group 1";
+
+        final String serverName1 = "server B";
 
         //initialize Group Management Service
         GroupManagementService gms = initializeGMS(serverName, groupName);
+
         //register for Group Events
         registerForGroupEvents(gms);
+
         //join group
         joinGMSGroup(groupName, gms);
+
         try {
             //send some messages
             sendMessages(gms, serverName);
@@ -40,6 +45,17 @@ public class SimpleShoalGMSSample implements CallBack{
         } catch (InterruptedException e) {
             logger.log(Level.WARNING, e.getMessage());
         }
+
+        DistributedStateCache dsc = gms.getGroupHandle().getDistributedStateCache();
+        dsc.addToCache(gms.getGroupName(), gms.getInstanceName(), "key1".getBytes(), "value1".getBytes());
+
+        Object o = dsc.getFromCache( gms.getGroupName(),  gms.getInstanceName(), "key1".getBytes()) ;
+
+        if(o == null){
+
+            System.out.println("owojhiqfpiq");
+        }
+
         //leave the group gracefully
         leaveGroupAndShutdown(serverName, gms);
     }
