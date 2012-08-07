@@ -4,9 +4,6 @@ import com.sun.enterprise.ee.cms.core.DistributedStateCache;
 import com.sun.enterprise.ee.cms.core.GMSException;
 import com.sun.enterprise.ee.cms.core.GMSFactory;
 import com.sun.enterprise.ee.cms.core.GroupManagementService;
-import org.gajaba.rule.nio2.Neo2AsyncClient;
-import org.gajaba.rule.nio2.Neo2AsyncServer;
-import org.gajaba.rule.shoalDSC.SimpleShoalGMSSample;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -62,20 +59,6 @@ public class Main {
 
         // ==================================================
 
-
-
-        //=================Neo2 Test Main====================
-
-        //Server Code: comment this for Client
-        Neo2AsyncServer server = new Neo2AsyncServer();
-        server.accept();
-
-        //Client Code: comment this for Server
-        Neo2AsyncClient client = new Neo2AsyncClient();
-        client.prepare();
-
-        // ==================================================
-
         //=================DistributedStateCache Test Main====================
 
         final String serverName = "server1";
@@ -88,9 +71,9 @@ public class Main {
             //gms.getGroupHandle().sendMessage(null, "message".getBytes());
             DistributedStateCache dsc = gms.getGroupHandle().getDistributedStateCache();
 
-            dsc.addToCache( "name", "id", (Serializable) "Key",  (Serializable) "State");
+            dsc.addToCache("name", "id", (Serializable) "Key", (Serializable) "State");
 
-            Object o = dsc.getFromCache( "name",  "id", (Serializable) "Key");
+            Object o = dsc.getFromCache("name", "id", (Serializable) "Key");
             System.out.println(o);
             Map map = dsc.getAllCache();
             System.out.println(map.toString());
