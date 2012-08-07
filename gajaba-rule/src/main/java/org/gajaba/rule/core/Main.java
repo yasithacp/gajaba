@@ -1,6 +1,8 @@
 package org.gajaba.rule.core;
 
 import com.sun.enterprise.ee.cms.core.GMSException;
+import org.gajaba.rule.nio2.Neo2AsyncClient;
+import org.gajaba.rule.nio2.Neo2AsyncServer;
 import org.gajaba.rule.shoalDSC.SimpleShoalGMSSample;
 
 //import javax.script.*;
@@ -13,6 +15,8 @@ import org.gajaba.rule.shoalDSC.SimpleShoalGMSSample;
 public class Main {
 
     public static void main(String[] args) throws Exception {
+
+        // ===========Rule Engine Main====================
 //        String src = "@ip=serverIp;";
 //        ScriptEngine engine = new DSLEngine();
 //
@@ -39,13 +43,32 @@ public class Main {
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
 //        }
+        // ==================================================
 
-        SimpleShoalGMSSample sgs = new SimpleShoalGMSSample();
-        try {
-            sgs.runSimpleSample();
-        } catch (GMSException e) {
-            //logger.log(Level.SEVERE, "Exception occured while joining group:"+e);
-        }
+
+        // ==============Shoal Sample Main======================
+//        SimpleShoalGMSSample sgs = new SimpleShoalGMSSample();
+//        try {
+//            sgs.runSimpleSample();
+//        } catch (GMSException e) {
+//            //logger.log(Level.SEVERE, "Exception occured while joining group:"+e);
+//        }
+
+        // ==================================================
+
+
+
+        //=================Neo2 Test Main====================
+
+        //Server Code: comment this for Client
+        Neo2AsyncServer server = new Neo2AsyncServer();
+        server.accept();
+
+        //Client Code: comment this for Server
+        Neo2AsyncClient client = new Neo2AsyncClient();
+        client.prepare();
+
+        // ==================================================
 
     }
 
