@@ -1,4 +1,4 @@
-package org.gajaba.rule.shoalDSC;
+package org.gajaba.group;
 
 import com.sun.enterprise.ee.cms.core.*;
 import com.sun.enterprise.ee.cms.impl.client.*;
@@ -6,14 +6,6 @@ import com.sun.enterprise.ee.cms.impl.client.*;
 import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-/**
- * Created with IntelliJ IDEA.
- * User: kasuncp
- * Date: 8/5/12
- * Time: 11:30 AM
- * To change this template use File | Settings | File Templates.
- */
 
 public class SimpleShoalGMSSample implements CallBack{
 
