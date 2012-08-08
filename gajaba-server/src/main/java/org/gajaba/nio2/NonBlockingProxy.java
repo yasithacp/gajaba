@@ -1,4 +1,4 @@
-package org.gajaba.rule.nio2;
+package org.gajaba.nio2;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
