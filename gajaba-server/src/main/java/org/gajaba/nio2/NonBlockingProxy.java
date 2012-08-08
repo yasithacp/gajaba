@@ -16,101 +16,101 @@ import java.util.logging.Logger;
 
 
 public class NonBlockingProxy {
-  private static Integer port = 8080;
+    private static Integer port = 8080;
 
-  private static String serverAddress = "74.125.224.72:80";
+    private static String serverAddress = "localhost:8000";
 
-  private static ExecutorService es = Executors.newCachedThreadPool();
-  public static final int BUFFER_SIZE = 1024;
+    private static ExecutorService es = Executors.newCachedThreadPool();
+    public static final int BUFFER_SIZE = 1024;
 
-  private static final Logger logger = Logger.getLogger("Proxy");
+    private static final Logger logger = Logger.getLogger("Proxy");
 
-  private static abstract class Handler<A> implements CompletionHandler<Integer, A> {
-    @Override
-    public void failed(Throwable exc, A attachment) {
-      error(exc, attachment);
-    }
-  }
-
-  private static void error(Throwable exc, Object attachment) {
-    logger.log(Level.WARNING, "IO failure in " + attachment, exc);
-  }
-
-  public static void main(String[] args) throws IOException, InterruptedException {
-    final String host;
-    final int port;
-    try {
-      String[] split = serverAddress.split(":");
-      if (split.length != 2) {
-        throw new IllegalArgumentException("host:port");
-      }
-      host = split[0];
-      port = Integer.parseInt(split[1]);
-    } catch (IllegalArgumentException e) {
-      System.exit(1);
-      return;
+    private static abstract class Handler<A> implements CompletionHandler<Integer, A> {
+        @Override
+        public void failed(Throwable exc, A attachment) {
+            error(exc, attachment);
+        }
     }
 
-    CountDownLatch done = new CountDownLatch(1);
+    private static void error(Throwable exc, Object attachment) {
+        logger.log(Level.WARNING, "IO failure in " + attachment, exc);
+    }
 
-    AsynchronousServerSocketChannel open = AsynchronousServerSocketChannel.open();
-    final AsynchronousServerSocketChannel listener =
-            open.bind(new InetSocketAddress(NonBlockingProxy.port));
-    final Queue<ByteBuffer> queue = new ConcurrentLinkedQueue<>();
-
-    listener.accept(null, new CompletionHandler<AsynchronousSocketChannel,Void>() {
-      public void completed(final AsynchronousSocketChannel client, Void att) {
-        // accept the next connection
-        listener.accept(null, this);
-
-        final AsynchronousSocketChannel server;
+    public static void main(String[] args) throws IOException, InterruptedException {
+        final String host;
+        final int port;
         try {
-          server = AsynchronousSocketChannel.open();
-          server.connect(new InetSocketAddress(host, port)).get();
-        } catch (Exception e) {
-          error(e, "connect failed: " + serverAddress);
-          System.exit(1);
-          return;
-        }
-
-        read(client, server);
-        read(server, client);
-      }
-
-      @Override
-      public void failed(Throwable exc, Void attachment) {
-        error(exc, "accept");
-        System.exit(1);
-      }
-
-      private ByteBuffer getBuffer() {
-        ByteBuffer poll = queue.poll();
-        if (poll == null) {
-          return ByteBuffer.allocate(BUFFER_SIZE);
-        }
-        return poll;
-      }
-
-      private void read(final AsynchronousSocketChannel reader, AsynchronousSocketChannel writer) {
-        final ByteBuffer buffer = getBuffer();
-        reader.read(buffer, writer, new Handler<AsynchronousSocketChannel>() {
-          @Override
-          public void completed(Integer result, AsynchronousSocketChannel writer) {
-            if (result == -1) {
-              return;
+            String[] split = serverAddress.split(":");
+            if (split.length != 2) {
+                throw new IllegalArgumentException("host:port");
             }
-            writer.write((ByteBuffer) buffer.flip(), buffer, new Handler<ByteBuffer>() {
-              @Override
-              public void completed(Integer result, ByteBuffer attachment) {
-                queue.add((ByteBuffer) buffer.clear());
-              }
-            });
-            read(reader, writer);
-          }
-        });
-      }
-    });
+            host = split[0];
+            port = Integer.parseInt(split[1]);
+        } catch (IllegalArgumentException e) {
+            System.exit(1);
+            return;
+        }
 
-    done.await();
-  }
+        CountDownLatch done = new CountDownLatch(1);
+
+        AsynchronousServerSocketChannel open = AsynchronousServerSocketChannel.open();
+        final AsynchronousServerSocketChannel listener =
+                open.bind(new InetSocketAddress(NonBlockingProxy.port));
+        final Queue<ByteBuffer> queue = new ConcurrentLinkedQueue<>();
+
+        listener.accept(null, new CompletionHandler<AsynchronousSocketChannel, Void>() {
+            public void completed(final AsynchronousSocketChannel client, Void att) {
+                // accept the next connection
+                listener.accept(null, this);
+
+                final AsynchronousSocketChannel server;
+                try {
+                    server = AsynchronousSocketChannel.open();
+                    server.connect(new InetSocketAddress(host, port)).get();
+                } catch (Exception e) {
+                    error(e, "connect failed: " + serverAddress);
+                    System.exit(1);
+                    return;
+                }
+
+                read(client, server);
+                read(server, client);
+            }
+
+            @Override
+            public void failed(Throwable exc, Void attachment) {
+                error(exc, "accept");
+                System.exit(1);
+            }
+
+            private ByteBuffer getBuffer() {
+                ByteBuffer poll = queue.poll();
+                if (poll == null) {
+                    return ByteBuffer.allocate(BUFFER_SIZE);
+                }
+                return poll;
+            }
+
+            private void read(final AsynchronousSocketChannel reader, AsynchronousSocketChannel writer) {
+                final ByteBuffer buffer = getBuffer();
+                reader.read(buffer, writer, new Handler<AsynchronousSocketChannel>() {
+                    @Override
+                    public void completed(Integer result, AsynchronousSocketChannel writer) {
+                        if (result == -1) {
+                            return;
+                        }
+                        writer.write((ByteBuffer) buffer.flip(), buffer, new Handler<ByteBuffer>() {
+                            @Override
+                            public void completed(Integer result, ByteBuffer attachment) {
+                                queue.add((ByteBuffer) buffer.clear());
+                            }
+                        });
+                        read(reader, writer);
+                    }
+                });
+            }
+        });
+
+        done.await();
+    }
 }
