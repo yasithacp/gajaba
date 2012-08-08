@@ -4,10 +4,18 @@ import org.gajaba.group.GroupManager;
 
 public class Agent {
 
+    private GroupManager manager;
+
     public void start(String serverName) {
-        GroupManager manager = new GroupManager();
+        manager = new GroupManager();
         manager.start(serverName);
     }
+
+    public void publish(String key,String value) {
+        manager.publish(key,value);
+
+    }
+
 
     public void start() {
         start("server" + System.currentTimeMillis());
