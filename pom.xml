@@ -34,6 +34,16 @@
             </modules>
         </profile>
 
+        <profile>
+            <id>sample</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>sample-agent</module>
+            </modules>
+        </profile>
+
     </profiles>
 
     <build>

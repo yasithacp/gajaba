@@ -3,19 +3,29 @@ package org.gajaba.group;
 import com.sun.enterprise.ee.cms.core.*;
 import com.sun.enterprise.ee.cms.impl.client.*;
 
+import java.net.InetAddress;
 import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SimpleShoalGMSSample implements CallBack{
+public class SimpleShoalGMSSample implements CallBack {
 
     final static Logger logger = Logger.getLogger("SimpleShoalGMSSample");
     final Object waitLock = new Object();
 
+    public static void main(String[] args) {
+        SimpleShoalGMSSample sgs = new SimpleShoalGMSSample();
+        try {
+            sgs.runSimpleSample();
+        } catch (GMSException e) {
+            logger.log(Level.SEVERE, "Exception occured while joining group:"+e);
+        }
+    }
+
     public void runSimpleSample() throws GMSException {
         logger.log(Level.INFO, "Starting SimpleShoalGMSSample....");
 
-        final String serverName = "server" +System.currentTimeMillis();
+        final String serverName = "server" + System.currentTimeMillis();
         final String groupName = "Group 1";
 
         final String serverName1 = "server B";
@@ -41,9 +51,9 @@ public class SimpleShoalGMSSample implements CallBack{
         DistributedStateCache dsc = gms.getGroupHandle().getDistributedStateCache();
         dsc.addToCache(gms.getGroupName(), gms.getInstanceName(), "key1".getBytes(), "value1".getBytes());
 
-        Object o = dsc.getFromCache( gms.getGroupName(),  gms.getInstanceName(), "key1".getBytes()) ;
+        Object o = dsc.getFromCache(gms.getGroupName(), gms.getInstanceName(), "key1".getBytes());
 
-        if(o == null){
+        if (o == null) {
 
             System.out.println("owojhiqfpiq");
         }
@@ -53,7 +63,7 @@ public class SimpleShoalGMSSample implements CallBack{
     }
 
     private GroupManagementService initializeGMS(String serverName, String groupName) {
-        logger.log(Level.INFO, "Initializing Shoal for member: "+serverName+" group:"+groupName);
+        logger.log(Level.INFO, "Initializing Shoal for member: " + serverName + " group:" + groupName);
         return (GroupManagementService) GMSFactory.startGMSModule(serverName,
                 groupName, GroupManagementService.MemberType.CORE, null);
     }
@@ -64,23 +74,23 @@ public class SimpleShoalGMSSample implements CallBack{
         gms.addActionFactory(new FailureSuspectedActionFactoryImpl(this));
         gms.addActionFactory(new FailureNotificationActionFactoryImpl(this));
         gms.addActionFactory(new PlannedShutdownActionFactoryImpl(this));
-        gms.addActionFactory(new MessageActionFactoryImpl(this),"SimpleSampleComponent");
+        gms.addActionFactory(new MessageActionFactoryImpl(this), "SimpleSampleComponent");
     }
 
     private void joinGMSGroup(String groupName, GroupManagementService gms) throws GMSException {
-        logger.log(Level.INFO, "Joining Group "+groupName);
+        logger.log(Level.INFO, "Joining Group " + groupName);
         gms.join();
     }
 
     private void sendMessages(GroupManagementService gms, String serverName) throws InterruptedException, GMSException {
         logger.log(Level.INFO, "wait 15 secs to send 10 messages");
-        synchronized(waitLock){
+        synchronized (waitLock) {
             waitLock.wait(10000);
         }
         GroupHandle gh = gms.getGroupHandle();
 
         logger.log(Level.INFO, "Sending messages...");
-        for(int i = 0; i<=10; i++ ){
+        for (int i = 0; i <= 10; i++) {
             gh.sendMessage("SimpleSampleComponent",
                     MessageFormat.format("Message {0}from server {1}", i, serverName).getBytes());
         }
@@ -88,30 +98,30 @@ public class SimpleShoalGMSSample implements CallBack{
 
     private void waitForShutdown() throws InterruptedException {
         logger.log(Level.INFO, "wait 20 secs to shutdown");
-        synchronized(waitLock){
+        synchronized (waitLock) {
             waitLock.wait(20000);
         }
     }
 
     private void leaveGroupAndShutdown(String serverName, GroupManagementService gms) {
-        logger.log(Level.INFO, "Shutting down instance "+serverName);
+        logger.log(Level.INFO, "Shutting down instance " + serverName);
         gms.shutdown(GMSConstants.shutdownType.INSTANCE_SHUTDOWN);
         System.exit(0);
     }
 
     public void processNotification(Signal signal) {
-        logger.log(Level.INFO, "Received Notification of type : "+signal.getClass().getName());
+        logger.log(Level.INFO, "Received Notification of type : " + signal.getClass().getName());
         try {
             signal.acquire();
-            logger.log(Level.INFO,"Source Member: "+signal.getMemberToken());
-            if(signal instanceof MessageSignal){
-                logger.log(Level.INFO,"Message: "+new String(((MessageSignal)signal).getMessage()));
+            logger.log(Level.INFO, "Source Member: " + signal.getMemberToken());
+            if (signal instanceof MessageSignal) {
+                logger.log(Level.INFO, "Message: " + new String(((MessageSignal) signal).getMessage()));
             }
             signal.release();
         } catch (SignalAcquireException e) {
-            logger.log(Level.WARNING, "Exception occured while acquiring signal"+e);
+            logger.log(Level.WARNING, "Exception occured while acquiring signal" + e);
         } catch (SignalReleaseException e) {
-            logger.log(Level.WARNING, "Exception occured while releasing signal"+e);
+            logger.log(Level.WARNING, "Exception occured while releasing signal" + e);
         }
     }
 }

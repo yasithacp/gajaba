@@ -1,11 +1,14 @@
 package org.gajaba.server;
 
-/**
- * Created with IntelliJ IDEA.
- * User: manu
- * Date: 8/8/12
- * Time: 2:29 PM
- * To change this template use File | Settings | File Templates.
- */
+import org.gajaba.group.GroupManager;
+
 public class Server {
+
+    public static final String SERVER_NAME = "GAJABA_SERVER";
+
+    public void start() {
+        GroupManager manager = new GroupManager();
+        manager.start(SERVER_NAME);
+
+    }
 }
