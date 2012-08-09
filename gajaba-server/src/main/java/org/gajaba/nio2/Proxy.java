@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 
 public class Proxy {
-    private static Integer port = 80;
+    private static Integer port = 8080;
     private static String serverAddress = "localhost:8000";
     private static ExecutorService es = Executors.newCachedThreadPool();
     public static final int BUFFER_SIZE = 1024;
@@ -69,7 +69,7 @@ public class Proxy {
                     System.exit(1);
                     return;
                 }
-
+                ruleDef.evaluateRequest(client);
 
                 read(client, server);
                 read(server, client);

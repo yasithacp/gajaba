@@ -1,8 +1,7 @@
 package org.gajaba.rule.core;
 
-import javax.script.Compilable;
-import javax.script.CompiledScript;
-import javax.script.ScriptEngine;
+import javax.script.*;
+import java.nio.channels.AsynchronousSocketChannel;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +9,16 @@ import java.util.Map;
 public class RuleDefinition {
     static ScriptEngine engine = new DSLEngine();
     private CompiledScript script;
-    private Map cache = Collections.emptyMap();
-    private List<String> agents;
+    private SimpleBindings bindings = new SimpleBindings();
 
 
     private RuleDefinition(CompiledScript script) {
         this.script = script;
+        bindings = new SimpleBindings();
+        bindings.put("cache", Collections.emptyMap());
+        bindings.put("agents", Collections.emptyList());
+
+
     }
 
     public static RuleDefinition createRuleDefinition(String ruleStr) {
@@ -29,14 +32,21 @@ public class RuleDefinition {
         return null;
     }
 
-    public void evaluateRequest() {
+    public void evaluateRequest(AsynchronousSocketChannel client)  {
+        Object answer = null;
+        try {
+            answer = script.eval(bindings);
+            System.out.println("acceptable servers : " + answer);
+        } catch (ScriptException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setCache(Map cache) {
-        this.cache = cache;
+        bindings.put("cache", cache);
     }
 
     public void setAgents(List<String> agents) {
-        this.agents = agents;
+        bindings.put("agents", agents);
     }
 }
