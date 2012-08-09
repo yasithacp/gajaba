@@ -4,9 +4,7 @@ import org.antlr.runtime.tree.Tree;
 import org.gajaba.rule.compiler.transformers.EqualOpTransformer;
 import org.gajaba.rule.compiler.transformers.TreeTransformer;
 import org.gajaba.rule.compiler.transformers.VariableTransformer;
-import org.gajaba.rule.core.Client;
 import org.gajaba.rule.parse.GajabaDSLLexer;
-import org.gajaba.rule.parse.GajabaDSLParser;
 
 import java.util.*;
 

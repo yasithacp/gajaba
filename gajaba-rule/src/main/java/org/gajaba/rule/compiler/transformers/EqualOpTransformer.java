@@ -2,9 +2,6 @@ package org.gajaba.rule.compiler.transformers;
 
 import org.antlr.runtime.tree.Tree;
 import org.gajaba.rule.compiler.SourceGenerator;
-import org.gajaba.rule.core.Client;
-
-import java.util.Map;
 
 public class EqualOpTransformer implements TreeTransformer {
 

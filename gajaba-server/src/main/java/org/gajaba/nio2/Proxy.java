@@ -1,5 +1,7 @@
 package org.gajaba.nio2;
 
+import org.gajaba.rule.core.RuleDefinition;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -15,15 +17,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class NonBlockingProxy {
-    private static Integer port = 8080;
-
+public class Proxy {
+    private static Integer port = 80;
     private static String serverAddress = "localhost:8000";
-
     private static ExecutorService es = Executors.newCachedThreadPool();
     public static final int BUFFER_SIZE = 1024;
+    private static final Logger logger = Logger.getLogger("org.gajaba.Proxy");
 
-    private static final Logger logger = Logger.getLogger("Proxy");
+    private RuleDefinition ruleDef;
+
+    public Proxy(RuleDefinition def) {
+        ruleDef = def;
+    }
 
     private static abstract class Handler<A> implements CompletionHandler<Integer, A> {
         @Override
@@ -36,26 +41,18 @@ public class NonBlockingProxy {
         logger.log(Level.WARNING, "IO failure in " + attachment, exc);
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public  void start() throws IOException, InterruptedException {
         final String host;
         final int port;
-        try {
-            String[] split = serverAddress.split(":");
-            if (split.length != 2) {
-                throw new IllegalArgumentException("host:port");
-            }
-            host = split[0];
-            port = Integer.parseInt(split[1]);
-        } catch (IllegalArgumentException e) {
-            System.exit(1);
-            return;
-        }
+        String[] split = serverAddress.split(":");
+        host = split[0];
+        port = Integer.parseInt(split[1]);
 
         CountDownLatch done = new CountDownLatch(1);
 
         AsynchronousServerSocketChannel open = AsynchronousServerSocketChannel.open();
         final AsynchronousServerSocketChannel listener =
-                open.bind(new InetSocketAddress(NonBlockingProxy.port));
+                open.bind(new InetSocketAddress(Proxy.port));
         final Queue<ByteBuffer> queue = new ConcurrentLinkedQueue<>();
 
         listener.accept(null, new CompletionHandler<AsynchronousSocketChannel, Void>() {
@@ -72,6 +69,7 @@ public class NonBlockingProxy {
                     System.exit(1);
                     return;
                 }
+
 
                 read(client, server);
                 read(server, client);
