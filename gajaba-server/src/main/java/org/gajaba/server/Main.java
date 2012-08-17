@@ -17,15 +17,16 @@ public class Main {
 
         RuleDefinition def = RuleDefinition.createRuleDefinition("@ip=serverIp;");
 
-        Server server = new Server(def);
-        server.start();
-
         try {
             Proxy proxy = new Proxy(def);
             proxy.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Server server = new Server(def);
+        server.start();
+
 
     }
 }

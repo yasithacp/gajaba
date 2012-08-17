@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 public class Proxy {
     private static Integer port = 8080;
-    private static String serverAddress = "localhost:8000";
+    private static int serverPort = 8000;
     private static ExecutorService es = Executors.newCachedThreadPool();
     public static final int BUFFER_SIZE = 1024;
     private static final Logger logger = Logger.getLogger("org.gajaba.Proxy");
@@ -41,12 +41,7 @@ public class Proxy {
         logger.log(Level.WARNING, "IO failure in " + attachment, exc);
     }
 
-    public  void start() throws IOException, InterruptedException {
-        final String host;
-        final int port;
-        String[] split = serverAddress.split(":");
-        host = split[0];
-        port = Integer.parseInt(split[1]);
+    public void start() throws IOException, InterruptedException {
 
         CountDownLatch done = new CountDownLatch(1);
 
@@ -60,16 +55,16 @@ public class Proxy {
                 // accept the next connection
                 listener.accept(null, this);
 
+                String host = ruleDef.evaluateRequest(client);
                 final AsynchronousSocketChannel server;
                 try {
                     server = AsynchronousSocketChannel.open();
-                    server.connect(new InetSocketAddress(host, port)).get();
+                    server.connect(new InetSocketAddress(host, serverPort)).get();
                 } catch (Exception e) {
-                    error(e, "connect failed: " + serverAddress);
+                    error(e, "connect failed: " + host + ":" + port);
                     System.exit(1);
                     return;
                 }
-                ruleDef.evaluateRequest(client);
 
                 read(client, server);
                 read(server, client);

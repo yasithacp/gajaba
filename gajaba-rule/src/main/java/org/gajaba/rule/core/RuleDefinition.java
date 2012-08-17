@@ -3,6 +3,7 @@ package org.gajaba.rule.core;
 import javax.script.*;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,14 +33,19 @@ public class RuleDefinition {
         return null;
     }
 
-    public void evaluateRequest(AsynchronousSocketChannel client)  {
-        Object answer = null;
-        try {
-            answer = script.eval(bindings);
-            System.out.println("acceptable servers : " + answer);
-        } catch (ScriptException e) {
-            e.printStackTrace();
+    public String evaluateRequest(AsynchronousSocketChannel client)  {
+//        try {
+//            Object answer = script.eval(bindings);
+//            System.out.println("acceptable servers : " + answer);
+//        } catch (ScriptException e) {
+//            e.printStackTrace();
+//        }
+       Map o = (Map) bindings.get("cache");
+        Iterator iterator = o.entrySet().iterator();
+        if(iterator.hasNext()){
+           return (String) ((Map.Entry)iterator.next()).getValue();
         }
+        return null;
     }
 
     public void setCache(Map cache) {

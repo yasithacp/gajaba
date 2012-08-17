@@ -8,13 +8,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws IOException {
         Agent agent = new Agent();
         if (args.length > 0) {
-            agent.start(args[0]);
+            if(args.length>1){
+                agent.start(args[0],args[1]);
+            }else{
+                agent.start(args[0]);
+            }
         } else {
-            agent.start();
+            System.out.println("enter local IP as first argument");
+            return;
         }
+
         while (true) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             System.out.print('>');
