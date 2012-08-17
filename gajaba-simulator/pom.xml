@@ -27,6 +27,24 @@
             <version>8.1.4.v20120524</version>
         </dependency>
 
+        <!--TODO: remove shoal and jxta dependencies form here.-->
+        <dependency>
+            <groupId>org.shoal</groupId>
+            <artifactId>shoal</artifactId>
+            <version>1.6.50</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../gajaba-group/lib/shoal-gms.jar</systemPath>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.jxta.platform</groupId>
+            <artifactId>jxta</artifactId>
+            <version>2.3.6</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../gajaba-group/lib/jxta.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
 
