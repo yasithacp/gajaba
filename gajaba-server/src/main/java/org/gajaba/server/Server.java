@@ -6,6 +6,7 @@ import org.gajaba.group.GroupManager;
 import org.gajaba.rule.core.RuleDefinition;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -43,5 +44,9 @@ public class Server implements Observer {
                 logger.log(Level.INFO, "cache updated");
             }
         }
+    }
+
+    public Map<String,String> getDistributedcache() {
+        return manager.getCache();
     }
 }

@@ -1,6 +1,9 @@
-import com.sun.enterprise.ee.cms.core.*;
+package org.gajaba.simulator;
 
-import java.io.Serializable;
+import com.sun.enterprise.ee.cms.core.GMSCacheable;
+import com.sun.enterprise.ee.cms.core.GMSFactory;
+import com.sun.enterprise.ee.cms.core.GroupManagementService;
+
 import java.util.Iterator;
 import java.util.Map;
 
@@ -13,9 +16,9 @@ import java.util.Map;
  */
 public class TableGenerator {
 
-    public String getHtml() {
+    public String getHtml(org.gajaba.server.Server gajabaServer) {
 
-        Map<String, String> map = this.getDistributedcache();
+        Map<String, String> map = gajabaServer.getDistributedcache();
 
         String html = "<table>\n" +
                 "<tr>\n" +
@@ -28,7 +31,7 @@ public class TableGenerator {
         while (it.hasNext()) {
             Map.Entry pairs = (Map.Entry)it.next();
             GMSCacheable key = (GMSCacheable) pairs.getKey();
-            System.out.println(key.getComponentName());
+            html += "<tr><td>"+key.getMemberTokenId()+"</td><td>"+key.getKey()+"</td><td>"+pairs.getValue()+"</td></tr>";
             it.remove(); // avoids a ConcurrentModificationException
         }
         html += "</table>";
@@ -45,31 +48,9 @@ public class TableGenerator {
 //                "</table>";
     }
 
-    private Map<String, String> getDistributedcache() {
-
-        final String serverName = "server" + System.currentTimeMillis();
-        final String groupName = "Group 1";
-        GroupManagementService gms = initializeGMS(serverName, groupName);
-
-        DistributedStateCache dsc = gms.getGroupHandle().getDistributedStateCache();
-        try {
-            dsc.addToCache("Group 1", "instenceName", (Serializable) "key1", (Serializable) "value1");
-        } catch (GMSException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        Map myMap = dsc.getAllCache();
-
-        return myMap;
-    }
-
     private GroupManagementService initializeGMS(String serverName, String groupName) {
         return (GroupManagementService) GMSFactory.startGMSModule(serverName,
                 groupName, GroupManagementService.MemberType.CORE, null);
     }
 
-    public static void main(String[] args) {
-        TableGenerator aa = new TableGenerator();
-        aa.getHtml();
-    }
 }

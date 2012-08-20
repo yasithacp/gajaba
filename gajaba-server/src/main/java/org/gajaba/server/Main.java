@@ -1,15 +1,7 @@
 package org.gajaba.server;
 
-
 import org.gajaba.nio2.Proxy;
-import org.gajaba.rule.core.Client;
 import org.gajaba.rule.core.RuleDefinition;
-
-import javax.script.Bindings;
-import javax.script.SimpleBindings;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Main {
 
