@@ -1,8 +1,8 @@
 package org.gajaba.simulator;
 
-import com.sun.enterprise.ee.cms.core.GMSCacheable;
 import com.sun.enterprise.ee.cms.core.GMSFactory;
 import com.sun.enterprise.ee.cms.core.GroupManagementService;
+import org.gajaba.group.GMSSeparator;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class TableGenerator {
 
-    public String getHtml(org.gajaba.server.Server gajabaServer) {
+    public String getHtml(org.gajaba.server.Server gajabaServer, GMSSeparator separator) {
 
         Map<String, String> map = gajabaServer.getDistributedcache();
 
@@ -30,8 +30,8 @@ public class TableGenerator {
         Iterator it = map.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pairs = (Map.Entry)it.next();
-            GMSCacheable key = (GMSCacheable) pairs.getKey();
-            html += "<tr><td>"+key.getMemberTokenId()+"</td><td>"+key.getKey()+"</td><td>"+pairs.getValue()+"</td></tr>";
+            Object key =  pairs.getKey();
+            html += "<tr><td>"+separator.getMemberTokenId(key)+"</td><td>"+separator.getKey(key)+"</td><td>"+pairs.getValue()+"</td></tr>";
             it.remove(); // avoids a ConcurrentModificationException
         }
         html += "</table>";

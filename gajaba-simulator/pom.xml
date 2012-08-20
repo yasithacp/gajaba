@@ -22,27 +22,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.gajaba</groupId>
+            <artifactId>group</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
             <version>8.1.4.v20120524</version>
-        </dependency>
-
-        <!--TODO: remove shoal and jxta dependencies form here.-->
-        <dependency>
-            <groupId>org.shoal</groupId>
-            <artifactId>shoal</artifactId>
-            <version>1.6.50</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/../gajaba-group/lib/shoal-gms.jar</systemPath>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.jxta.platform</groupId>
-            <artifactId>jxta</artifactId>
-            <version>2.3.6</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/../gajaba-group/lib/jxta.jar</systemPath>
         </dependency>
 
     </dependencies>
@@ -55,32 +44,6 @@
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>6.0.1</version>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.gajaba.simulator.Simulator</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>simple-command</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>attached</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-
         </plugins>
 
     </build>
