@@ -58,6 +58,7 @@ public class Simulator extends AbstractHandler {
     public void startServer(org.gajaba.server.Server gajabaServer, GMSSeparator separator) throws Exception {
         map = new HashMap<String , HttpServlet>();
         map.put("table", new TableServlet(gajabaServer,separator));
+        map.put("tree", new TreeJsonServlet());
 
         Server server = new Server(8080);
 
