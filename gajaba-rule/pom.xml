@@ -8,6 +8,12 @@
     <artifactId>rule</artifactId>
     <version>1.0</version>
 
+    <parent>
+        <groupId>org.gajaba</groupId>
+        <artifactId>core</artifactId>
+        <version>1.0</version>
+    </parent>
+
     <dependencies>
         <dependency>
             <groupId>org.antlr</groupId>
