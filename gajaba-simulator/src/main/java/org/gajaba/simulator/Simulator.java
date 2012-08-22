@@ -34,7 +34,7 @@ public class Simulator extends AbstractHandler {
             servlet.service(request,response);
         } else {
             if (input == null) {
-                response.sendError(404, "not found in jar");
+                response.sendError(404, "Not found in jar");
             } else {
                 OutputStream output = response.getOutputStream();
                 copyStream(input, output);
@@ -58,12 +58,10 @@ public class Simulator extends AbstractHandler {
     public void startServer(org.gajaba.server.Server gajabaServer, GMSSeparator separator) throws Exception {
         map = new HashMap<String , HttpServlet>();
         map.put("table", new TableServlet(gajabaServer,separator));
-        map.put("tree", new TreeJsonServlet());
+        map.put("tree", new TreeJsonServlet(gajabaServer,separator));
 
         Server server = new Server(8080);
-
         server.setHandler(this);
-
 
         server.start();
         server.join();
@@ -80,8 +78,6 @@ public class Simulator extends AbstractHandler {
                 filePath = new String("webapp" + target);
         }
 
-        //String htmlString = this.readFileAsString(filePath);
-        //htmlString = htmlString.replace("#table", this.getHtmlForTable());
         return this.getClass().getResourceAsStream(filePath);
 
     }

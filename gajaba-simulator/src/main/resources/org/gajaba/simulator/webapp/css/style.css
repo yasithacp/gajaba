@@ -1,6 +1,46 @@
 /* A Free Design by Bryant Smith (bryantsmith.com) */
 
+#tableDiv{
+    text-align: left;
+    padding-top: 50px;
+    z-index:50
+}
 
+table.altrowstable {
+    font-family: verdana,arial,sans-serif;
+    font-size:14px;
+    color:white;
+    border-collapse: collapse;
+    width: 100%;
+    border: 3px outset #520000;
+}
+table.altrowstable th {
+    border-width: 3px;
+    padding: 8px;
+    border-style: outset;
+    border-color: #520000;
+    font-weight: bold;
+    border-bottom: 3px outset #520000;
+    background-color:#520000 !important;
+}
+table.altrowstable td {
+    border-width: 3px;
+    padding: 8px;
+    border-style: outset;
+    border-color: #520000;
+    border-bottom: 3px outset #520000;
+}
+.oddrowcolor{
+    background-color:#AC1616 !important;
+}
+.evenrowcolor{
+    background-color: #ff6d6f !important;
+}
+
+.trHover {
+    cursor:pointer;
+
+}
 
 body {
     margin: 0;

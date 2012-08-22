@@ -2,6 +2,8 @@ package org.gajaba.simulator;
 
 
 import com.sun.enterprise.ee.cms.core.GMSCacheable;
+import org.gajaba.group.GMSSeparator;
+import org.gajaba.server.Server;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -10,19 +12,37 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 public class TreeJsonServlet extends HttpServlet {
+
+    private Server server;
+    private GMSSeparator separator;
+
+    public TreeJsonServlet(Server gajabaServer, GMSSeparator separator) {
+        this.server = gajabaServer;
+        this.separator = separator;
+    }
+
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException
     {
         PrintWriter out = resp.getWriter();
-        feedDummyData(out);
+        Map map = this.server.getDistributedcache();
+        String json = this.writeDataFromCache(map);
+        out.print("{\n" +
+                " \"name\": \"Load Balancer\",\n" +
+                " \"children\": [\n" +
+                "\n" +
+                " ]\n" +
+                "}");
     }
 
     private void feedDummyData(PrintWriter out){
+
         out.print("{\n" +
                 " \"name\": \"Load Balancer\",\n" +
                 " \"children\": [\n" +
@@ -148,21 +168,41 @@ public class TreeJsonServlet extends HttpServlet {
         return cache;
     }
 
-    private void writeDataFromCache(HashMap map){
-        String text="{\n" +
-                " \"name\": \"Load Balancer\" ";
-        Iterator it;
-        if(!map.isEmpty()){
+    private String writeDataFromCache(Map map){
 
-            it = map.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pairs = (Map.Entry)it.next();
-                Object key =  pairs.getKey();
-                //todo: make the children tree(making the string like in feedDummyData() method
-                text += "adding childern algo goes here";
-                it.remove(); // avoids a ConcurrentModificationException
-            }
+        HashMap<String, ArrayList<String>> stringMap = getMapAsAnArray(map);
+        String html = "";
+        Iterator it = stringMap.entrySet().iterator();
+        while (it.hasNext()) {
+
+
+
         }
+        return html;
+    }
+
+    public HashMap<String, ArrayList<String>> getMapAsAnArray(Map map){
+
+        HashMap<String, ArrayList<String>> stringMap = new HashMap<String, ArrayList<String>>();
+
+        Iterator it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pairs = (Map.Entry)it.next();
+            Object key =  pairs.getKey();
+            if(stringMap.get(separator.getMemberTokenId(key)) == null){
+                ArrayList<String> arraylist = new ArrayList();
+                arraylist.add(separator.getKey(key).toString() + " = " + pairs.getValue().toString());
+                stringMap.put(separator.getMemberTokenId(key).toString(), arraylist);
+            } else {
+                ArrayList<String> existArrayList = stringMap.get(separator.getMemberTokenId(key));
+                existArrayList.add(separator.getKey(key).toString() + " = " + pairs.getValue().toString());
+                stringMap.remove(separator.getMemberTokenId(key).toString());
+                stringMap.put(separator.getMemberTokenId(key).toString(), existArrayList);
+            }
+            it.remove(); // avoids a ConcurrentModificationException
+        }
+
+        return stringMap;
     }
 
 //    private void temp(){

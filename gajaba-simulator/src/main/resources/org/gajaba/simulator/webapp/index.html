@@ -3,14 +3,15 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <title>SlickRed | florida web design</title>
+    <script src="js/jquery.min.js"></script>
+    <title>Gajaba Simulator</title>
 </head>
 
 <body>
 <div id="container">
     <div id="header">
         <h1>Gajaba<span class="off"> Simulator</span></h1>
-        <h2>Load Balancing Frame work</h2>
+        <h2>Load Balancing Framework</h2>
     </div>
 
     <!--<div id="menu">-->
@@ -33,8 +34,8 @@
             <h3>Links</h3>
 
             <ul>
-                <li><a href="#">Clients</a></li>
-                <li><a href="#">Distributed Map</a></li>
+                <li><a href="tree-interactive.html">Clients</a></li>
+                <li><a href="index.html">Distributed Map</a></li>
             </ul>
         </div>
 
@@ -45,11 +46,19 @@
     <div id="content">
 
 
-        <div id="content_top"></div>
-        #table
-        <div id="content_bottom"></div>
+        <!--<div id="content_top"></div>-->
+        <div id="tableDiv">
+
+        </div>
+        <!--<div id="content_bottom"></div>-->
 
     </div>
 </div>
 </body>
 </html>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $('#tableDiv').load('dynamic/table')
+    });
+</script>

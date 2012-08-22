@@ -31,7 +31,7 @@ public class TableServlet extends HttpServlet {
         PrintWriter out = resp.getWriter();
         Map<String, String> map = this.server.getDistributedcache();
 
-        table = "<table>\n" +
+        table = "<table class=\"altrowstable\" id=\"alternatecolor\">\n" +
                 "<tr>\n" +
                 "<th>GMSMember</th>\n" +
                 "<th>Key</th>\n" +
@@ -39,10 +39,13 @@ public class TableServlet extends HttpServlet {
                 "</tr>\n";
 
         Iterator it = map.entrySet().iterator();
+        int row = 0;
         while (it.hasNext()) {
+            String cssClass = (row%2 == 0) ? "evenrowcolor" : "oddrowcolor";
             Map.Entry pairs = (Map.Entry)it.next();
             Object key =  pairs.getKey();
-            table += "<tr><td>"+separator.getMemberTokenId(key)+"</td><td>"+separator.getKey(key)+"</td><td>"+pairs.getValue()+"</td></tr>";
+            table += "<tr class=\"trHover " + cssClass + "\"><td>"+separator.getMemberTokenId(key)+"</td><td>"+separator.getKey(key)+"</td><td>"+pairs.getValue()+"</td></tr>";
+            row++;
             it.remove(); // avoids a ConcurrentModificationException
         }
         table += "</table>";
