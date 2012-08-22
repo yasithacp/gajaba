@@ -3,7 +3,9 @@ package org.gajaba.group;
 import com.sun.enterprise.ee.cms.core.*;
 import com.sun.enterprise.ee.cms.impl.client.*;
 
+import java.io.Serializable;
 import java.text.MessageFormat;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
