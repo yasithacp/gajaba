@@ -26,11 +26,11 @@ public class SourceGenerator {
         builder.append("import java.util.*;\n");
         builder.append("import org.gajaba.rule.core.*;\n");
         builder.append("class CompiledDSLScript {\n");
-        builder.append("    public static List<String> main (List<String> clients, ");
+        builder.append("    public static List<MockClient> main (List<String> clients, ");
         builder.append(generateParameters(variables));
         builder.append("){\n");
 
-        builder.append("        List<String> accepted = new ArrayList<String>();\n");
+        builder.append("        List<MockClient> accepted = new ArrayList<MockClient>();\n");
         for (int i = 0; i < rootTree.getChildCount(); i++) {
             Tree child = rootTree.getChild(i);
             generateSubTree(child, builder);
@@ -61,7 +61,7 @@ public class SourceGenerator {
                 stringBuilder.append("String ");
                 stringBuilder.append(text);
             } else {
-                stringBuilder.append("Map<String,String> ");
+                stringBuilder.append("Map<MockClient,String> ");
                 stringBuilder.append(text);
             }
             if (iterator.hasNext()) {

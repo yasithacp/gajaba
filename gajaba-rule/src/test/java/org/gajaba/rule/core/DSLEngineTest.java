@@ -30,12 +30,17 @@ public class DSLEngineTest {
             CompiledScript compiledScript = engine.compile(src);
             Bindings bindings = new SimpleBindings();
 
-            String a = "server A";
-            String b = "server B";
-            String c = "server C";
-            bindings.put("clients", Arrays.asList(a, b));
+//            String a = "server A";
+//            String b = "server B";
+//            String c = "server C";
 
-            Map<String,String> map = new HashMap<String, String>();
+            MockClient a = new MockClient("server A", "ip", "100.10.29.12");
+            MockClient b = new MockClient("server B", "ip", "100.10.29.13");
+            MockClient c = new MockClient("server C", "ip", "100.10.29.14");
+
+            bindings.put("agents", Arrays.asList(a, b, c));
+
+            Map<MockClient,String> map = new HashMap<MockClient, String>();
             map.put(a,"100.10.29.12");
             map.put(b,"100.10.29.13");
             map.put(c,"100.10.29.12");

@@ -16,7 +16,7 @@ public class EqualOpTransformer implements TreeTransformer {
 //            }
 //        }
 
-        builder.append("        for (Map.Entry<String, String> entry : ");
+        builder.append("        for (Map.Entry<MockClient, String> entry : ");
         builder.append(tree.getChild(1).getChild(0));
         builder.append(".entrySet()) {\n");
         builder.append("           if(entry.getValue().equals(");
