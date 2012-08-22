@@ -3,7 +3,6 @@ package org.gajaba.rule.core;
 import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.SimpleBindings;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,23 +29,20 @@ public class DSLEngineTest {
             CompiledScript compiledScript = engine.compile(src);
             Bindings bindings = new SimpleBindings();
 
-//            String a = "server A";
-//            String b = "server B";
-//            String c = "server C";
+            MockClient a = new MockClient("MOCK_GROUP", "ip", "100.10.29.12");
+            MockClient b = new MockClient("MOCK_GROUP", "ip", "100.10.29.13");
+            MockClient c = new MockClient("MOCK_GROUP", "ip", "100.10.29.14");
 
-            MockClient a = new MockClient("server A", "ip", "100.10.29.12");
-            MockClient b = new MockClient("server B", "ip", "100.10.29.13");
-            MockClient c = new MockClient("server C", "ip", "100.10.29.14");
+            bindings.put("cache", Arrays.asList(a, b, c));
 
-            bindings.put("agents", Arrays.asList(a, b, c));
-
-            Map<MockClient,String> map = new HashMap<MockClient, String>();
-            map.put(a,"100.10.29.12");
-            map.put(b,"100.10.29.13");
-            map.put(c,"100.10.29.12");
-            bindings.put("serverIp", map);
+            Map<MockClient, String> map = new HashMap<MockClient, String>();
+            map.put(a, "100.10.29.12");
+            map.put(b, "100.10.29.13");
+            map.put(c, "100.10.29.12");
+            bindings.put("agents", map);
 
             bindings.put("ip", "100.10.29.13");
+            bindings.put("separator", new MockSeparator());
 
             Object answer = compiledScript.eval(bindings);
 

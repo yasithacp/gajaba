@@ -9,31 +9,32 @@ package org.gajaba.rule.core;
  */
 public class MockClient {
 
-    private String name;
     private String tokenId;
     private String key;
+    private String componentName;
 
-    public MockClient(String name, String tokenId, String key){
+    public MockClient(String componentName, String tokenId, String key) {
 
-        this.name = name;
+        this.componentName = componentName;
         this.tokenId = tokenId;
         this.key = key;
     }
 
-    public String getName(){
-        return name;
-    }
 
-    public String getTokenId(){
+    public String getTokenId() {
         return tokenId;
     }
 
-    public String getKey(){
+    public String getKey() {
         return key;
     }
 
     @Override
     public String toString() {
-        return name;
+        return tokenId + ":" + key;
+    }
+
+    public String getComponentName() {
+        return componentName;
     }
 }
