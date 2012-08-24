@@ -9,13 +9,6 @@ import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created with IntelliJ IDEA.
- * User: kasuncp
- * Date: 8/20/12
- * Time: 12:45 PM
- * To change this template use File | Settings | File Templates.
- */
 public class DSLEngineTest {
 
     @org.junit.Test
