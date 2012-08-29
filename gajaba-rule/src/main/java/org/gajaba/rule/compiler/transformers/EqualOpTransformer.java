@@ -2,29 +2,45 @@ package org.gajaba.rule.compiler.transformers;
 
 import org.antlr.runtime.tree.Tree;
 import org.gajaba.rule.compiler.SourceGenerator;
+import org.gajaba.rule.parse.GajabaDSLLexer;
 
 public class EqualOpTransformer implements TreeTransformer {
 
     @Override
     public void transform(Tree tree, StringBuilder builder, SourceGenerator generator) {
         System.out.println(tree.toStringTree());
-//        generator.generateSubTree(tree.getChild(0), builder);
 
-//        for (Map.Entry<Client, String> entry : b.entrySet()) {
-//            if(entry.getValue().equals(a)){
-//                accepted.add(entry.getKey());
-//            }
-//        }
+        int typeLeft = tree.getChild(0).getType();
+        int typeRight = tree.getChild(1).getType();
 
-        builder.append("        for (Map.Entry<MockClient, String> entry : ");
-        builder.append(tree.getChild(1).getChild(0));
-        builder.append(".entrySet()) {\n");
-        builder.append("           if(entry.getValue().equals(");
-        builder.append(tree.getChild(0).getChild(0));
-        builder.append(")){\n");
-        builder.append("               accepted.add(entry.getKey());\n");
-        builder.append("           }\n");
-        builder.append("        }\n");
+        if ((typeLeft == GajabaDSLLexer.INPUT_VAR) &&
+                (typeRight == GajabaDSLLexer.INPUT_VAR)) {
+            builder.append("        if(");
+            generator.generateSubTree(tree.getChild(0), builder);
+            builder.append(" != null && !");
+            generator.generateSubTree(tree.getChild(0), builder);
+            builder.append(".equals(");
+            generator.generateSubTree(tree.getChild(1), builder);
+            builder.append(")){\n");
+            builder.append("            accepted.clear();\n");
+            builder.append("        }\n");
+        } else if (typeLeft == GajabaDSLLexer.STRING) {
+            builder.append("        if(!");
+            generator.generateSubTree(tree.getChild(0), builder);
+            builder.append(".equals(");
+            generator.generateSubTree(tree.getChild(1), builder);
+            builder.append(")){\n");
+            builder.append("            accepted.clear();\n");
+            builder.append("        }\n");
+        } else if (typeRight == GajabaDSLLexer.STRING) {
+            builder.append("        if(!");
+            generator.generateSubTree(tree.getChild(1), builder);
+            builder.append(".equals(");
+            generator.generateSubTree(tree.getChild(0), builder);
+            builder.append(")){\n");
+            builder.append("            accepted.clear();\n");
+            builder.append("        }\n");
 
+        }
     }
 }

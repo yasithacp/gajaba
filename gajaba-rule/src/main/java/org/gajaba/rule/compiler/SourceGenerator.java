@@ -2,6 +2,7 @@ package org.gajaba.rule.compiler;
 
 import org.antlr.runtime.tree.Tree;
 import org.gajaba.rule.compiler.transformers.EqualOpTransformer;
+import org.gajaba.rule.compiler.transformers.StringTransformer;
 import org.gajaba.rule.compiler.transformers.TreeTransformer;
 import org.gajaba.rule.compiler.transformers.VariableTransformer;
 import org.gajaba.rule.parse.GajabaDSLLexer;
@@ -16,6 +17,7 @@ public class SourceGenerator {
     static {
         defaultTransformer.put(new TokenType(GajabaDSLLexer.OP, "="), new EqualOpTransformer());
         defaultTransformer.put(new TokenType(GajabaDSLLexer.INPUT_VAR, "INPUT_VAR"), new VariableTransformer());
+        defaultTransformer.put(new TokenType(GajabaDSLLexer.STRING, "STRING"), new StringTransformer());
     }
 
     public String generate(Tree rootTree) {
@@ -26,11 +28,12 @@ public class SourceGenerator {
         builder.append("import java.util.*;\n");
         builder.append("import org.gajaba.rule.core.*;\n");
         builder.append("class CompiledDSLScript {\n");
-        builder.append("    public static List<MockClient> main (List<String> clients, ");
+        builder.append("    public static List<String> main (List<String> agents, Map<Object,String> cache ");
         builder.append(generateParameters(variables));
         builder.append("){\n");
 
-        builder.append("        List<MockClient> accepted = new ArrayList<MockClient>();\n");
+
+        builder.append("        List<String> accepted = new ArrayList<String>(agents);\n");
         for (int i = 0; i < rootTree.getChildCount(); i++) {
             Tree child = rootTree.getChild(i);
             generateSubTree(child, builder);
@@ -58,14 +61,12 @@ public class SourceGenerator {
             Tree next = iterator.next();
             String text = next.getChild(0).getText();
             if (next.getType() == GajabaDSLLexer.INPUT_VAR) {
+                stringBuilder.append(", ");
                 stringBuilder.append("String ");
                 stringBuilder.append(text);
             } else {
-                stringBuilder.append("Map<MockClient,String> ");
-                stringBuilder.append(text);
-            }
-            if (iterator.hasNext()) {
-                stringBuilder.append(", ");
+//                stringBuilder.append("Map<Object,String> ");
+//                stringBuilder.append(text);
             }
         }
         return stringBuilder.toString();
