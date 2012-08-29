@@ -13,7 +13,7 @@ Step 1 : Build the project
 ----------------------------
 
 This project needs Java version 7 to run. Check your java version using the following command
-java -version
+    java -version
 
 If you have Java 7 installed in your computer, then move on to the next step to build the project
 
@@ -24,7 +24,7 @@ If you have Java 7 installed in your computer, then move on to the next step to 
 
 This will create the following .jar files
 	/gajaba/gajaba-server/target/server-1.0-jar-with-dependencies.jar
-	/gajaba/sample-agent/target/agent-sample-1.0-jar-with-dependencies.jar
+    /gajaba/sample-agent/target/agent-sample-1.0-jar-with-dependencies.jar
 
 
 Step 2 : Run the server
@@ -49,7 +49,7 @@ Running the sample-agent is similar to running the server in the previous step
 
 1. First you need to copy the following .jars to the location (gajaba/sample-agent/target) where server-1.0-jar-with-dependencies.jar has been created.
 	gajaba/gajaba-group/lib/shoal-gms.jar
-	gajaba/gajaba-group/lib/jxta.jar
+    gajaba/gajaba-group/lib/jxta.jar
 
 2. Then go to gajaba/sample-agent/target directory
 	cd gajaba/sample-agent/target
