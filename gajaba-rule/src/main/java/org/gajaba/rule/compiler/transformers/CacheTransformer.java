@@ -9,8 +9,8 @@ public class CacheTransformer implements TreeTransformer {
 
     @Override
     public void transform(Tree tree, StringBuilder builder, SourceGenerator generator) {
-        builder.append("CacheUtil.getCacheSubMap(");
+        builder.append("CacheUtil.getCacheSubMapForKey(");
         generator.generateSubTree(tree.getChild(0),builder);
-        builder.append(", cache)");
+        builder.append(", cache, separator)");
     }
 }

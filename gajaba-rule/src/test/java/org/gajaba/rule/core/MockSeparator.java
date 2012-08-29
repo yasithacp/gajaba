@@ -26,4 +26,10 @@ public class MockSeparator implements org.gajaba.group.KeySeparator{
         MockClient client = (MockClient) key;
         return client.getKey();
     }
+
+    @Override
+    public Object copyWithNewKey(Object key, String value) {
+        MockClient client = (MockClient) key;
+        return new MockClient(client.getComponentName(),client.getTokenId(),value);
+    }
 }

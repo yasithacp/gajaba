@@ -37,4 +37,27 @@ public class MockClient {
     public String getComponentName() {
         return componentName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MockClient client = (MockClient) o;
+
+        if (componentName != null ? !componentName.equals(client.componentName) : client.componentName != null)
+            return false;
+        if (key != null ? !key.equals(client.key) : client.key != null) return false;
+        if (tokenId != null ? !tokenId.equals(client.tokenId) : client.tokenId != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = tokenId != null ? tokenId.hashCode() : 0;
+        result = 31 * result + (key != null ? key.hashCode() : 0);
+        result = 31 * result + (componentName != null ? componentName.hashCode() : 0);
+        return result;
+    }
 }

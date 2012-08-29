@@ -21,4 +21,10 @@ public class GMSSeparator implements KeySeparator {
         GMSCacheable cacheble = (GMSCacheable) key;
         return cacheble.getKey();
     }
+
+    @Override
+    public Object copyWithNewKey(Object key, String value) {
+        GMSCacheable cacheble = (GMSCacheable) key;
+        return new GMSCacheable(cacheble.getComponentName(),cacheble.getMemberTokenId(),value);
+    }
 }

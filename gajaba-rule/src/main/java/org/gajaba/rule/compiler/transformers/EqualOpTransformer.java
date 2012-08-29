@@ -24,7 +24,7 @@ public class EqualOpTransformer implements TreeTransformer {
             builder.append(")){\n");
             builder.append("            accepted.clear();\n");
             builder.append("        }\n");
-        } else if (typeLeft == GajabaDSLLexer.STRING) {
+        } else if (typeLeft == GajabaDSLLexer.STRING && typeRight != GajabaDSLLexer.STATE_VAR) {
             builder.append("        if(!");
             generator.generateSubTree(tree.getChild(0), builder);
             builder.append(".equals(");
@@ -32,7 +32,7 @@ public class EqualOpTransformer implements TreeTransformer {
             builder.append(")){\n");
             builder.append("            accepted.clear();\n");
             builder.append("        }\n");
-        } else if (typeRight == GajabaDSLLexer.STRING) {
+        } else if (typeRight == GajabaDSLLexer.STRING && typeLeft != GajabaDSLLexer.STATE_VAR) {
             builder.append("        if(!");
             generator.generateSubTree(tree.getChild(1), builder);
             builder.append(".equals(");
@@ -40,9 +40,23 @@ public class EqualOpTransformer implements TreeTransformer {
             builder.append(")){\n");
             builder.append("            accepted.clear();\n");
             builder.append("        }\n");
+        } else if (typeLeft == GajabaDSLLexer.STATE_VAR && typeRight == GajabaDSLLexer.STATE_VAR) {
+
         } else if (typeLeft == GajabaDSLLexer.STATE_VAR) {
-            generator.generateSubTree(tree.getChild(0), builder);
-            builder.append(";\n");
+            oneSideSate(builder, generator, tree.getChild(1), tree.getChild(0));
+        } else if (typeRight == GajabaDSLLexer.STATE_VAR) {
+            oneSideSate(builder, generator, tree.getChild(0), tree.getChild(1));
         }
     }
+
+    private void oneSideSate(StringBuilder builder, SourceGenerator generator, Tree varTree, Tree stateTree) {
+        builder.append("CacheUtil.getTrimAccepted(accepted,CacheUtil.getCacheSubMapForValue(");
+        generator.generateSubTree(varTree, builder);
+        builder.append(",");
+        generator.generateSubTree(stateTree, builder);
+        builder.append(", separator), separator);\n");
+
+    }
+
 }
+

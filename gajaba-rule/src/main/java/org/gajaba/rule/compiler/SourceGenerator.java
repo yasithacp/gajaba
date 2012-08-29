@@ -24,9 +24,10 @@ public class SourceGenerator {
         StringBuilder builder = new StringBuilder();
         builder.append("package org.gajaba.rule.gen;\n");
         builder.append("import java.util.*;\n");
+        builder.append("import org.gajaba.group.KeySeparator;\n");
         builder.append("import org.gajaba.rule.core.*;\n");
         builder.append("class CompiledDSLScript {\n");
-        builder.append("    public static List<String> main (List<String> agents, Map<Object,String> cache ");
+        builder.append("    public static List<String> main (List<String> agents, Map<Object,String> cache, KeySeparator separator ");
         builder.append(generateParameters(variables));
         builder.append("){\n");
 

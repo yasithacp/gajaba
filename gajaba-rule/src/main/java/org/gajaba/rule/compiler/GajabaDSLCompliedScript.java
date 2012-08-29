@@ -1,6 +1,7 @@
 package org.gajaba.rule.compiler;
 
 import org.antlr.runtime.tree.Tree;
+import org.gajaba.group.KeySeparator;
 import org.gajaba.rule.core.DSLEngine;
 import org.gajaba.rule.parse.GajabaDSLLexer;
 
@@ -14,6 +15,7 @@ public class GajabaDSLCompliedScript extends CompiledScript {
 
     public static final String AGENTS = "agents";
     public static final String CACHE = "cache";
+    public static final String SEPARATOR = "separator";
     private DSLEngine engine;
     private Set<Tree> variables;
     private Class classes[];
@@ -50,10 +52,11 @@ public class GajabaDSLCompliedScript extends CompiledScript {
         this.engine = engine;
         this.variables = vars;
 
-        int i = 2;
-        classes = new Class[getInputVariables().size() + 2];
+        int i = 3;
+        classes = new Class[getInputVariables().size() + 3];
         classes[0] = List.class;
         classes[1] = Map.class;
+        classes[2] = KeySeparator.class;
         for (String next : inputVariables) {
             classes[i++] = String.class;
         }
@@ -72,6 +75,7 @@ public class GajabaDSLCompliedScript extends CompiledScript {
 
         arguments.add(bindings.get(AGENTS));
         arguments.add(bindings.get(CACHE));
+        arguments.add(bindings.get(SEPARATOR));
         for (Tree next : variables) {
             if (next.getType() == GajabaDSLLexer.INPUT_VAR)
                 arguments.add(bindings.get(next.getChild(0).getText()));
