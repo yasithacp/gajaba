@@ -20,20 +20,37 @@ public class TreeJsonServlet extends HttpServlet {
     private Server server;
     private GMSSeparator separator;
 
+    /**
+     * Constructor
+     * @param gajabaServer Server
+     * @param separator GMSSeparator
+     */
     public TreeJsonServlet(Server gajabaServer, GMSSeparator separator) {
         this.server = gajabaServer;
         this.separator = separator;
     }
 
+    /**
+     *
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     */
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException
     {
         PrintWriter out = resp.getWriter();
-        Map map = this.server.getDistributedcache();
+        Map map = this.server.getDistributedCache();
         String json = this.writeDataFromCache(map);
         out.print(json);
     }
 
+    /**
+     * Create the json string
+     * @param map HashMap
+     * @return
+     */
     private String writeDataFromCache(Map map){
 
         HashMap<String, ArrayList<String>> stringMap = getMapAsAnArray(map);
@@ -73,6 +90,11 @@ public class TreeJsonServlet extends HttpServlet {
         return html;
     }
 
+    /**
+     * Create a hash map for the iteration
+     * @param map HashMap
+     * @return
+     */
     public HashMap<String, ArrayList<String>> getMapAsAnArray(Map map){
 
         HashMap<String, ArrayList<String>> stringMap = new HashMap<String, ArrayList<String>>();

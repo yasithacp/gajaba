@@ -19,11 +19,17 @@ public class Server implements Observer {
     private GroupManager manager;
     private RuleDefinition ruleDef;
 
+    /**
+     * Constructor
+     * @param def RuleDefinition
+     */
     public Server(RuleDefinition def) {
         ruleDef = def;
     }
 
-
+    /**
+     * Start the group manager
+     */
     public void start() {
         manager = new GroupManager();
         manager.start(SERVER_NAME);
@@ -31,6 +37,9 @@ public class Server implements Observer {
     }
 
     @Override
+    /**
+     * Update the distributed cache
+     */
     public void update(Observable o, Object arg) {
         System.out.println(arg);
         if (arg instanceof JoinNotificationSignal) {
@@ -46,7 +55,11 @@ public class Server implements Observer {
         }
     }
 
-    public Map<String,String> getDistributedcache() {
+    /**
+     * Get the distributed cache as a map
+     * @return Map
+     */
+    public Map<String,String> getDistributedCache() {
         return manager.getCache();
     }
 }

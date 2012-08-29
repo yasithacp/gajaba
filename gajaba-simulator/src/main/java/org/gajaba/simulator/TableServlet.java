@@ -18,18 +18,30 @@ public class TableServlet extends HttpServlet {
     private Server server;
     private GMSSeparator separator;
 
+    /**
+     * Constructor
+     * @param gajabaServer Server
+     * @param separator GMSSeparator
+     */
     public TableServlet(Server gajabaServer, GMSSeparator separator) {
         this.server = gajabaServer;
         this.separator = separator;
     }
 
+    /**
+     * Create the table according to the distributed cache
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     */
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException
     {
 
         String table;
         PrintWriter out = resp.getWriter();
-        Map<String, String> map = this.server.getDistributedcache();
+        Map<String, String> map = this.server.getDistributedCache();
 
         table = "<table class=\"altrowstable\" id=\"alternatecolor\">\n" +
                 "<tr>\n" +

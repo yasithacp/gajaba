@@ -18,6 +18,15 @@ public class Simulator extends AbstractHandler {
 
     private HashMap<String, HttpServlet> map;
 
+    /**
+     *
+     * @param target
+     * @param baseRequest
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException
+     */
     public void handle(String target,
                        Request baseRequest,
                        HttpServletRequest request,
@@ -55,6 +64,12 @@ public class Simulator extends AbstractHandler {
         simulator.startServer(gajabaServer, new GMSSeparator());
     }
 
+    /**
+     * Start the server
+     * @param gajabaServer Server
+     * @param separator GMSSeparator
+     * @throws Exception
+     */
     public void startServer(org.gajaba.server.Server gajabaServer, GMSSeparator separator) throws Exception {
         map = new HashMap<String , HttpServlet>();
         map.put("table", new TableServlet(gajabaServer,separator));
@@ -68,6 +83,12 @@ public class Simulator extends AbstractHandler {
 
     }
 
+    /**
+     * Get the requested target as an input stream
+     * @param target String
+     * @return
+     * @throws IOException
+     */
     public InputStream getInputPutStream(String target) throws IOException {
         String filePath;
         switch (target) {
@@ -83,7 +104,12 @@ public class Simulator extends AbstractHandler {
     }
 
 
-
+    /**
+     * Copy the given input stream to output stream
+     * @param input InputStream
+     * @param output OutputStream
+     * @throws IOException
+     */
     public static void copyStream(InputStream input, OutputStream output)
             throws IOException {
         byte[] buffer = new byte[1024]; // Adjust if you want

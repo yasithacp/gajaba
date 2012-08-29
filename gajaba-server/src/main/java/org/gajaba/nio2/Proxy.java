@@ -26,6 +26,10 @@ public class Proxy {
 
     private RuleDefinition ruleDef;
 
+    /**
+     * Constructor
+     * @param def RuleDefinition
+     */
     public Proxy(RuleDefinition def) {
         ruleDef = def;
     }
@@ -37,10 +41,20 @@ public class Proxy {
         }
     }
 
+    /**
+     * Log when error occurred
+     * @param exc
+     * @param attachment
+     */
     private static void error(Throwable exc, Object attachment) {
         logger.log(Level.WARNING, "IO failure in " + attachment, exc);
     }
 
+    /**
+     *
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public  void start() throws IOException, InterruptedException {
         final String host;
         final int port;
