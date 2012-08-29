@@ -16,6 +16,8 @@ import java.util.List;
 
 public class Main {
 
+    public static final String LOCALHOST = "localhost";
+
     public static void main(String[] args) throws IOException {
 
         Agent agent = new Agent();
@@ -65,7 +67,7 @@ public class Main {
             e1.printStackTrace();
         }
         if (ipAddresses.isEmpty()) {
-            return null;
+            return LOCALHOST;
         } else {
             for (InetAddress ip : ipAddresses) {
                 if (ip instanceof Inet4Address) {
@@ -77,6 +79,10 @@ public class Main {
 
         if (ipAddress == null) {
             ipAddress = ipAddresses.get(0).getHostAddress();
+        }
+
+        if(ipAddress == null){
+            ipAddress = LOCALHOST;
         }
 
         return ipAddress;
