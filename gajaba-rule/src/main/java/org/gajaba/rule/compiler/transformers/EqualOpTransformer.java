@@ -40,7 +40,9 @@ public class EqualOpTransformer implements TreeTransformer {
             builder.append(")){\n");
             builder.append("            accepted.clear();\n");
             builder.append("        }\n");
-
+        } else if (typeLeft == GajabaDSLLexer.STATE_VAR) {
+            generator.generateSubTree(tree.getChild(0), builder);
+            builder.append(";\n");
         }
     }
 }

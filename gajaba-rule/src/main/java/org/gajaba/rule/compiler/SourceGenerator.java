@@ -1,10 +1,7 @@
 package org.gajaba.rule.compiler;
 
 import org.antlr.runtime.tree.Tree;
-import org.gajaba.rule.compiler.transformers.EqualOpTransformer;
-import org.gajaba.rule.compiler.transformers.StringTransformer;
-import org.gajaba.rule.compiler.transformers.TreeTransformer;
-import org.gajaba.rule.compiler.transformers.VariableTransformer;
+import org.gajaba.rule.compiler.transformers.*;
 import org.gajaba.rule.parse.GajabaDSLLexer;
 
 import java.util.*;
@@ -18,6 +15,7 @@ public class SourceGenerator {
         defaultTransformer.put(new TokenType(GajabaDSLLexer.OP, "="), new EqualOpTransformer());
         defaultTransformer.put(new TokenType(GajabaDSLLexer.INPUT_VAR, "INPUT_VAR"), new VariableTransformer());
         defaultTransformer.put(new TokenType(GajabaDSLLexer.STRING, "STRING"), new StringTransformer());
+        defaultTransformer.put(new TokenType(GajabaDSLLexer.STATE_VAR, "STATE_VAR"), new CacheTransformer());
     }
 
     public String generate(Tree rootTree) {
@@ -50,8 +48,8 @@ public class SourceGenerator {
         TreeTransformer transformer = defaultTransformer.get(tokenType);
         if (transformer != null) {
             transformer.transform(tree, builder, this);
-        }else{
-            System.err.print("warning: no Transformer matching the sub tree "+ tree.toStringTree());
+        } else {
+            System.err.print("warning: no Transformer matching the sub tree " + tree.toStringTree());
         }
     }
 

@@ -18,7 +18,7 @@ public class DSLEngineTest {
     public void testEval() throws Exception {
         System.out.println("Testing DSLEngine:eval()");
 
-        String src = "@ip=#\"serverIp\";";
+        String src = "#\"serverIp\"=@ip;";
 
         DSLEngine engine = new DSLEngine();
         CompiledScript compiledScript = engine.compile(src);
