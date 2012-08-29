@@ -146,7 +146,7 @@ function update(source) {
 //      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
 
     nodeEnter.append("rect")
-            .attr("width", 100)
+            .attr("width", 120)
             .attr("height", 50)
             .style("fill", 'lightyellow')
             .style("stroke", 'lightblue')
@@ -158,8 +158,10 @@ function update(source) {
             .attr("x", 70)
             .attr("y", 20)
             .attr("dy", ".35em")
-            .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+            .attr("text-anchor", "middle")
             .text(function(d) { return d.name; })
+            .style("font-weight","bold")
+            .style("font-size",12)
             .style("fill-opacity", 1e-6);
 
 //    nodeEnter.append("image")
@@ -248,6 +250,8 @@ function updateOnClick(source) {
             .attr("dy", ".35em")
             .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
             .text(function(d) { return d.name; })
+            .style("font-weight","bold")
+            .style("font-size",12)
             .style("fill-opacity", 1e-6);
 
     // Transition nodes to their new position.
