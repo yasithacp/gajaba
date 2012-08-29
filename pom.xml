@@ -32,6 +32,7 @@
                 <module>gajaba-group</module>
                 <module>gajaba-rule</module>
                 <module>gajaba-simulator</module>
+                <module>gajaba-server-distr</module>
             </modules>
         </profile>
 

@@ -4,13 +4,14 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.gajaba.group.GMSSeparator;
-import org.gajaba.rule.core.RuleDefinition;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 
 public class Simulator extends AbstractHandler {
@@ -51,17 +52,6 @@ public class Simulator extends AbstractHandler {
                 output.close();
             }
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-
-        RuleDefinition def = RuleDefinition.createRuleDefinition("@ip=serverIp;");
-
-        org.gajaba.server.Server gajabaServer = new org.gajaba.server.Server(def);
-        gajabaServer.start();
-
-        Simulator simulator = new Simulator();
-        simulator.startServer(gajabaServer, new GMSSeparator());
     }
 
     /**
