@@ -12,23 +12,23 @@ table.altrowstable {
     color:white;
     border-collapse: collapse;
     width: 100%;
-    border: 3px outset #520000;
+    border: 3px outset #004000;
 }
 table.altrowstable th {
     border-width: 3px;
     padding: 8px;
     border-style: outset;
-    border-color: #520000;
+    border-color: #004000;
     font-weight: bold;
-    border-bottom: 3px outset #520000;
+    border-bottom: 3px outset #004000;
     background-color:#520000 !important;
 }
 table.altrowstable td {
     border-width: 3px;
     padding: 8px;
     border-style: outset;
-    border-color: #520000;
-    border-bottom: 3px outset #520000;
+    border-color: #004000;
+    border-bottom: 3px outset #004000;
 }
 .oddrowcolor{
     background-color:#AC1616 !important;

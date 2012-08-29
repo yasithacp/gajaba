@@ -54,11 +54,18 @@
 
     </div>
 </div>
-</body>
-</html>
+
 <script type="text/javascript">
 
     $(document).ready(function() {
-        $('#tableDiv').load('dynamic/table')
+        loadTable();
     });
+
+    function loadTable(){
+        $('#tableDiv').load('dynamic/table');
+        setTimeout(loadTable, 500);
+    }
 </script>
+
+</body>
+</html>

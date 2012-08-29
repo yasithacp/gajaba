@@ -39,14 +39,14 @@ public class TreeJsonServlet extends HttpServlet {
         HashMap<String, ArrayList<String>> stringMap = getMapAsAnArray(map);
         String html = "{\n" +
                 " \"name\": \"Load Balancer\",\n" +
-                " \"children\": [\n" +
-                "  {";
+                " \"children\": [\n";
+
         Iterator it = stringMap.entrySet().iterator();
         int var = 1;
         while (it.hasNext()) {
             Map.Entry pairs = (Map.Entry)it.next();
             ArrayList<String> values = (ArrayList<String>) pairs.getValue();
-            html += "   \"name\": \""+ pairs.getKey()+"\",\n" +
+            html += "  { \"name\": \""+ pairs.getKey()+"\",\n" +
                     "   \"children\": [\n";
 
             for(int i=0; i< values.size(); i++){
@@ -66,7 +66,7 @@ public class TreeJsonServlet extends HttpServlet {
                 html += "  }\n";
             }
             var++;
-            it.remove();
+            //it.remove();
         }
         html += " ]\n" +
                 "}";

@@ -100,7 +100,16 @@ d3.json("../dynamic/tree", function(json) {
 
   root.children.forEach(collapse);
   update(root);
+  realTimeUpdater()
 });
+
+function realTimeUpdater(){
+    d3.json("../dynamic/tree", function(json) {
+        update(root);
+    });
+
+    setTimeout(realTimeUpdater, 500);
+}
 
 function update(source) {
 
