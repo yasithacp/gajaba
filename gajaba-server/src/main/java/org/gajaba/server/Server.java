@@ -62,4 +62,10 @@ public class Server implements Observer {
     public Map<String,String> getDistributedCache() {
         return manager.getCache();
     }
+
+    public void setRuleDefinition(RuleDefinition def){
+        def.setCache(manager.getCache());
+        def.setAgents(manager.getAgent());
+        ruleDef = def;
+    }
 }

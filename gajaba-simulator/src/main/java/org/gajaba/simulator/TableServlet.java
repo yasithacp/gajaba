@@ -14,7 +14,6 @@ import java.util.Map;
 
 public class TableServlet extends HttpServlet {
 
-
     private Server server;
     private GMSSeparator separator;
 

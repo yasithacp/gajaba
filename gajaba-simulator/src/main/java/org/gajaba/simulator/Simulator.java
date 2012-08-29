@@ -74,6 +74,8 @@ public class Simulator extends AbstractHandler {
         map = new HashMap<String , HttpServlet>();
         map.put("table", new TableServlet(gajabaServer,separator));
         map.put("tree", new TreeJsonServlet(gajabaServer,separator));
+        map.put("rule", new RuleServlet(gajabaServer,separator));
+        map.put("ruleData", new RuleDataServlet(gajabaServer,separator));
 
         Server server = new Server(8080);
         server.setHandler(this);

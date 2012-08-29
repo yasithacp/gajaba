@@ -4,6 +4,7 @@ import com.sun.enterprise.ee.cms.core.*;
 import com.sun.enterprise.ee.cms.impl.client.JoinNotificationActionFactoryImpl;
 import com.sun.enterprise.ee.cms.impl.client.MessageActionFactoryImpl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -60,5 +61,9 @@ public class GroupManager extends Observable implements CallBack {
             cache = gms.getGroupHandle().getDistributedStateCache();
         }
         return cache.getAllCache();
+    }
+
+    public List<String> getAgent() {
+        return gms.getGroupHandle().getAllCurrentMembers();
     }
 }

@@ -4,6 +4,25 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <script src="js/jquery.min.js"></script>
+    <style>
+        #ruleEditor * {
+            vertical-align: top;
+            margin-top: 30px;
+            float: left;
+        }
+        #ruleEditor label {
+            padding-left: 10px;
+            padding-right: 20px;
+            font-size: 14px;
+            color: #EED7D7;
+            font-weight: bold;
+        }
+        #textarea{
+            padding: 5px;
+            background-color: #FACFCF;
+            color:#330000;
+        }
+    </style>
     <title>Gajaba Simulator</title>
 </head>
 
@@ -48,9 +67,14 @@
 
 
         <!--<div id="content_top"></div>-->
-        <div id="tableDiv">
-
+        <div id="ruleEditor">
+            <form id="ruleForm" method="POST" action="dynamic/rule">
+            <label for="textarea">Rule</label>
+            <textarea name="textarea" id="textarea" rows="8" cols="50"></textarea>
+            <input type="submit" id="submit" value="Copy to terminal"/>
+            </form>
         </div>
+
         <!--<div id="content_bottom"></div>-->
 
     </div>
@@ -59,13 +83,9 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-        loadTable();
+        $('#textarea').load('dynamic/ruleData');
     });
 
-    function loadTable(){
-        $('#tableDiv').load('dynamic/table');
-        setTimeout(loadTable, 500);
-    }
 </script>
 
 </body>
