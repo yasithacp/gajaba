@@ -1,13 +1,16 @@
 package org.gajaba.rule.core;
 
+import org.gajaba.rule.compiler.GajabaDSLCompliedScript;
+
 import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.SimpleBindings;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class DSLEngineTest {
 
@@ -17,33 +20,33 @@ public class DSLEngineTest {
 
         String src = "@ip=serverIp;";
 
-        try {
-            DSLEngine engine = new DSLEngine();
-            CompiledScript compiledScript = engine.compile(src);
-            Bindings bindings = new SimpleBindings();
+        DSLEngine engine = new DSLEngine();
+        CompiledScript compiledScript = engine.compile(src);
+        GajabaDSLCompliedScript gajabaDSLCompliedScript = (GajabaDSLCompliedScript) compiledScript;
 
-            MockClient a = new MockClient("MOCK_GROUP", "ip", "100.10.29.12");
-            MockClient b = new MockClient("MOCK_GROUP", "ip", "100.10.29.13");
-            MockClient c = new MockClient("MOCK_GROUP", "ip", "100.10.29.14");
+        List<String> stateVariables = gajabaDSLCompliedScript.getStateVariables();
+        assertEquals("only one state variable in this script", 1, stateVariables.size());
+        assertEquals("'serverIp' should be the state variable", "serverIp", stateVariables.get(0));
 
-            bindings.put("cache", Arrays.asList(a, b, c));
+        List<String> inputVariables = gajabaDSLCompliedScript.getInputVariables();
+        assertEquals("only one input variable in this script", 1,inputVariables.size());
+        assertEquals("'ip' should be the input variable", "ip",inputVariables.get(0));
 
-            Map<MockClient, String> map = new HashMap<MockClient, String>();
-            map.put(a, "100.10.29.12");
-            map.put(b, "100.10.29.13");
-            map.put(c, "100.10.29.12");
-            bindings.put("agents", map);
+        Bindings bindings = new SimpleBindings();
+        MockClient a = new MockClient("MOCK_GROUP", "agent1", "serverIp");
+        MockClient b = new MockClient("MOCK_GROUP", "agent2", "serverIp");
+        MockClient c = new MockClient("MOCK_GROUP", "agent3", "serverIp");
+        bindings.put("agents", Arrays.asList(a, b, c));
+        Map<MockClient, String> map = new HashMap<MockClient, String>();
+        map.put(a, "100.10.29.12");
+        map.put(b, "100.10.29.13");
+        map.put(c, "100.10.29.12");
+        bindings.put("serverIp", map);
+        bindings.put("ip", "100.10.29.13");
+        bindings.put("separator", new MockSeparator());
 
-            bindings.put("ip", "100.10.29.13");
-            bindings.put("separator", new MockSeparator());
+        Object answer = compiledScript.eval(bindings);
 
-            Object answer = compiledScript.eval(bindings);
-
-            assertTrue(answer.toString().equals("[server B]"));
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
+        assertEquals(Arrays.asList(b), answer);
     }
 }
