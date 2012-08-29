@@ -16,13 +16,41 @@ public class GajabaDSLCompliedScript extends CompiledScript {
     private DSLEngine engine;
     private Set<Tree> variables;
     private Class classes[];
+    private ArrayList<String> stateVariables;
+    private List<String> inputVariables;
+
+    public List<String> getStateVariables() {
+        if (stateVariables == null) {
+            genVarLists();
+        }
+        return stateVariables;
+    }
+
+    public List<String> getInputVariables() {
+        if (inputVariables == null) {
+            genVarLists();
+        }
+        return inputVariables;
+    }
+
+    private void genVarLists() {
+        inputVariables = new ArrayList<>();
+        stateVariables = new ArrayList<>();
+        for (Tree variable : variables) {
+            if ( variable.getType() == GajabaDSLLexer.STATE_VAR) {
+                stateVariables.add(variable.getChild(0).getText());
+            }else if ( variable.getType() == GajabaDSLLexer.INPUT_VAR) {
+                inputVariables.add(variable.getChild(0).getText());
+            }
+        }
+    }
 
     public GajabaDSLCompliedScript(DSLEngine engine, Set<Tree> vars) {
         this.engine = engine;
         this.variables = vars;
 
         int i = 1;
-        classes = new Class[vars.size()+1];
+        classes = new Class[vars.size() + 1];
         classes[0] = List.class;
         for (Tree next : vars) {
             Class c;
