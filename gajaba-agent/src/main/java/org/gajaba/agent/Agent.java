@@ -22,8 +22,4 @@ public class Agent {
         manager.publish(key, value);
 
     }
-
-    public void start(String ip) {
-        start(ip, "server" + System.currentTimeMillis());
-    }
 }
