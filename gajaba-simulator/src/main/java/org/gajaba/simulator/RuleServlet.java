@@ -37,7 +37,7 @@ public class RuleServlet extends HttpServlet {
     {
         String field = req.getParameter("textarea");
         System.out.println(field);
-        RuleDefinition def = RuleDefinition.createRuleDefinition(field);
+        RuleDefinition def = RuleDefinition.createRuleDefinition(field, separator);
         server.setRuleDefinition(def);
         resp.sendRedirect("/ruleEditor.html");
     }

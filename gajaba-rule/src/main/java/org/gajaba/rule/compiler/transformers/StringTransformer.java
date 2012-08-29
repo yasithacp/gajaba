@@ -9,7 +9,6 @@ public class StringTransformer implements TreeTransformer {
     @Override
     public void transform(Tree tree, StringBuilder builder, SourceGenerator generator) {
         String unecaped = tree.getChild(0).getText();
-        unecaped = unecaped.substring(1,unecaped.length()-1);
         String ecaped = StringEscapeUtils.escapeJava(unecaped);
         builder.append("\"");
         builder.append(ecaped);

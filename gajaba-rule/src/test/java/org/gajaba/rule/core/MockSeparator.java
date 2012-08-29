@@ -1,13 +1,6 @@
 package org.gajaba.rule.core;
 
-/**
- * Created with IntelliJ IDEA.
- * User: kasuncp
- * Date: 8/22/12
- * Time: 2:42 PM
- * To change this template use File | Settings | File Templates.
- */
-public class MockSeparator implements org.gajaba.group.KeySeparator{
+public class MockSeparator implements org.gajaba.group.KeySeparator {
 
     @Override
     public String getComponentName(Object key) {
@@ -28,8 +21,8 @@ public class MockSeparator implements org.gajaba.group.KeySeparator{
     }
 
     @Override
-    public Object copyWithNewKey(Object key, String value) {
-        MockClient client = (MockClient) key;
-        return new MockClient(client.getComponentName(),client.getTokenId(),value);
+    public Object construct(String compName, String tokenId, String key) {
+        return new MockClient(compName, tokenId, key);
     }
+
 }

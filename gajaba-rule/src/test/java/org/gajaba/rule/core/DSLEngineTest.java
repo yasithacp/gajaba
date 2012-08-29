@@ -52,13 +52,9 @@ public class DSLEngineTest {
         CompiledScript compiledScript = engine.compile(src);
         GajabaDSLCompliedScript gajabaDSLCompliedScript = (GajabaDSLCompliedScript) compiledScript;
 
-//        List<String> stateVariables = gajabaDSLCompliedScript.getStateVariables();
-//        assertEquals("only one state variable in this script", 1, stateVariables.size());
-//        assertEquals("'serverIp' should be the state variable", "serverIp", stateVariables.get(0));
-
-//        List<String> inputVariables = gajabaDSLCompliedScript.getInputVariables();
-//        assertEquals("only one input variable in this script", 1,inputVariables.size());
-//        assertEquals("'ip' should be the input variable", "ip",inputVariables.get(0));
+        List<String> inputVariables = gajabaDSLCompliedScript.getInputVariables();
+        assertEquals("only one input variable in this script", 1,inputVariables.size());
+        assertEquals("'ip' should be the input variable", "ip",inputVariables.get(0));
 
         Bindings bindings = new SimpleBindings();
         MockClient a = new MockClient("MOCK_GROUP", "agent1", "serverIp");
@@ -78,6 +74,6 @@ public class DSLEngineTest {
         Object answer = compiledScript.eval(bindings);
         System.out.println(answer);
 
-//        assertEquals(Arrays.asList("agent2"), answer);
+        assertEquals(Arrays.asList("agent2"), answer);
     }
 }

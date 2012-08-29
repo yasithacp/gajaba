@@ -22,7 +22,10 @@ public class CacheUtil {
     public static Map<Object, String> getCacheSubMapForKey(Map<Object, String> keys, Map<Object, String> cache, KeySeparator separator) {
         ConcurrentHashMap<Object, String> map = new ConcurrentHashMap<>();
         for (Map.Entry<Object, String> keyEntry : keys.entrySet()) {
-            Object keyEntryWithValue = separator.copyWithNewKey(keyEntry.getKey(), keyEntry.getValue());
+            Object keyEntryWithValue = separator.construct(
+                    separator.getComponentName(keyEntry.getKey()),
+                    separator.getMemberTokenId(keyEntry.getKey())
+                    , keyEntry.getValue());
             String value = cache.get(keyEntryWithValue);
             if (value != null)
                 map.put(keyEntry.getKey(), value);

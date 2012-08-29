@@ -9,5 +9,5 @@ public interface KeySeparator {
 
     Object getKey(Object key);
 
-    Object copyWithNewKey(Object key, String value);
+    Object construct(String compName, String tokenId, String key);
 }
