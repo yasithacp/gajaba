@@ -135,14 +135,6 @@ function update(source) {
             .attr("r", 1e-6)
             .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
-    nodeEnter.append("text")
-//      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
-            .attr("x", 70)
-            .attr("y", 20)
-            .attr("dy", ".35em")
-            .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-            .text(function(d) { return d.name; })
-            .style("fill-opacity", 1e-6);
 
     // Transition nodes to their new position.
     var nodeUpdate = node.transition()
@@ -154,13 +146,23 @@ function update(source) {
 //      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
 
     nodeEnter.append("rect")
-            .attr("width", 100)
+            .attr("width", 120)
             .attr("height", 50)
-            .style("fill", 'blue')
+            .style("fill", 'lightyellow')
             .style("stroke", 'lightblue')
             .style("stroke-width", 3)
-            .style("fill-opacity", 0.1);
+            .style("fill-opacity", 1);
 
+    nodeEnter.append("text")
+//      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+            .attr("x", 70)
+            .attr("y", 20)
+            .attr("dy", ".35em")
+            .attr("text-anchor", "middle")
+            .text(function(d) { return d.name; })
+            .style("font-weight","bold")
+            .style("font-size",12)
+            .style("fill-opacity", 1e-6);
 
 //    nodeEnter.append("image")
 //            .attr("height", '40')
@@ -200,7 +202,8 @@ function update(source) {
     // Transition links to their new position.
     link.transition()
             .duration(duration)
-            .attr("d", diagonal);
+            .attr("d", d3.svg.diagonal()
+            .projection(function(d) { return [d.y+100, d.x+25]; }));
 
     // Transition exiting nodes to the parent's new position.
     link.exit().transition()
@@ -242,10 +245,13 @@ function updateOnClick(source) {
             .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
 
     nodeEnter.append("text")
-            .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+            .attr("x", 100)
+            .attr("y", 25)
             .attr("dy", ".35em")
             .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
             .text(function(d) { return d.name; })
+            .style("font-weight","bold")
+            .style("font-size",12)
             .style("fill-opacity", 1e-6);
 
     // Transition nodes to their new position.
@@ -253,9 +259,9 @@ function updateOnClick(source) {
             .duration(duration)
             .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
-    nodeUpdate.select("circle")
-            .attr("r", 4.5)
-            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
+//    nodeUpdate.select("circle")
+//            .attr("r", 4.5)
+//            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
 
 
 //    nodeEnter.append("rect")
