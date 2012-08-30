@@ -49,6 +49,11 @@ public class Proxy {
         logger.log(Level.WARNING, "IO failure in " + attachment, exc);
     }
 
+    /**
+     *
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public void start() throws IOException, InterruptedException {
 
         CountDownLatch done = new CountDownLatch(1);
@@ -89,18 +94,33 @@ public class Proxy {
                 }
             }
 
+            /**
+             *
+             * @param sb
+             * @return
+             */
             private String getIP(String sb) {
                 int space1 = sb.indexOf(" ");
                 int space2 = sb.indexOf(" ",space1+1);
                 return sb.substring(space1,space2);
             }
 
+            /**
+             *
+             * @param client
+             * @return
+             */
             private StringBuilder readLine(AsynchronousSocketChannel client) {
                 final StringBuilder builder = new StringBuilder(BUFFER_SIZE);
                 readLine(builder, client);
                 return builder;
             }
 
+            /**
+             *
+             * @param builder
+             * @param client
+             */
             private void readLine(StringBuilder builder, AsynchronousSocketChannel client) {
                 final ByteBuffer buffer = ByteBuffer.allocate(128);
                 Future<Integer> read = client.read(buffer);
@@ -141,6 +161,12 @@ public class Proxy {
                 return poll;
             }
 
+            /**
+             *
+             * @param firstLine
+             * @param reader
+             * @param writer
+             */
             private void read(final String firstLine, final AsynchronousSocketChannel reader, AsynchronousSocketChannel writer) {
                 byte[] bytes = firstLine.getBytes();
                 final ByteBuffer buffer = ByteBuffer.allocateDirect(bytes.length);
@@ -155,6 +181,11 @@ public class Proxy {
                 read(reader, writer);
             }
 
+            /**
+             *
+             * @param reader
+             * @param writer
+             */
             private void read(final AsynchronousSocketChannel reader, AsynchronousSocketChannel writer) {
                 final ByteBuffer buffer = getBuffer();
                 reader.read(buffer, writer, new Handler<AsynchronousSocketChannel>() {

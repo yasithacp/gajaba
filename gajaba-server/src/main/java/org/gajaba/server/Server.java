@@ -63,6 +63,10 @@ public class Server implements Observer {
         return manager.getCache();
     }
 
+    /**
+     * Set the rule definition
+     * @param def
+     */
     public void setRuleDefinition(RuleDefinition def){
         def.setCache(manager.getCache());
         def.setAgents(manager.getAgent());

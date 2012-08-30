@@ -10,6 +10,10 @@ public class ByteArrayOutputJavaFileObject extends SimpleJavaFileObject {
 
     private ByteArrayOutputStream out;
 
+    /**
+     *
+     * @param uri
+     */
     public ByteArrayOutputJavaFileObject(URI uri) {
         super(uri, JavaFileObject.Kind.CLASS);
         out = new ByteArrayOutputStream();
