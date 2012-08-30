@@ -79,7 +79,7 @@ public class Proxy {
                         return;
                     }
 
-                    read(sb,client, server);
+                    read(sb, client, server);
                     read(server, client);
                 } else {
                     try {
@@ -91,8 +91,8 @@ public class Proxy {
 
             private String getIP(String sb) {
                 int space1 = sb.indexOf(" ");
-                int space2 = sb.indexOf(" ",space1+1);
-                return sb.substring(space1,space2);
+                int space2 = sb.indexOf(" ", space1 + 1);
+                return sb.substring(space1 + 1, space2);
             }
 
             private StringBuilder readLine(AsynchronousSocketChannel client) {

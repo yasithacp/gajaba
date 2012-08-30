@@ -60,7 +60,7 @@ public class DSLEngineTest {
 
         bindings.put("cache", map);
         bindings.put("ip", "100.10.29.13");
-        bindings.put("url", "/user/polly/main.html");
+        bindings.put("url", "/user/polly/index.html");
         bindings.put("separator", new MockSeparator());
 
         Object answer = compiledScript.eval(bindings);

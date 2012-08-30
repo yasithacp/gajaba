@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
 
         GMSSeparator separator = new GMSSeparator();
-        RuleDefinition def = RuleDefinition.createRuleDefinition("#\"user\"=\"a\";",separator);
+        RuleDefinition def = RuleDefinition.createRuleDefinition("#@url['/user/(\\\\w*)/.*',1]='true';",separator);
 
         Server server = new Server(def);
         server.start();
