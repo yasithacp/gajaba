@@ -119,6 +119,14 @@ public class DSLEngine extends AbstractScriptEngine implements Compilable, Invoc
         }
     }
 
+    /**
+     * invoke a function with given arguments.
+     * @param name name of the function to be exected.
+     * @param args arguments for the function.these will be passed parameters
+     * @return returns the Object returned from the dynamic execution.
+     * @throws ScriptException if there was error during dynamic execution.
+     * @throws NoSuchMethodException
+     */
     @Override
     public Object invokeFunction(String name, Object... args) throws ScriptException, NoSuchMethodException {
         Class classes[] = new Class[args.length];
@@ -129,7 +137,11 @@ public class DSLEngine extends AbstractScriptEngine implements Compilable, Invoc
     }
 
 
-
+    /**
+     * compiles java byte code to a in memory data structure.
+     * @param javaCode string containing java code to be compiled.
+     * @return
+     */
     private JavaCompiler.CompilationTask compileJavaCode(String javaCode) {
 
         JavaFileObject inputFileObj = fileManager.getJavaFileForInput(StandardLocation.CLASS_OUTPUT,
