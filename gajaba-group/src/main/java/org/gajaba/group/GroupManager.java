@@ -18,29 +18,50 @@ public class GroupManager extends Observable implements CallBack {
     final static Logger logger = Logger.getLogger("gajaba.group.GroupManager");
     private DistributedStateCache cache;
 
+    /**
+     * Starts Shoal framework with a given server name
+     * @param serverName
+     */
     public void start(String serverName) {
         logger.log(Level.INFO, "Initializing Shoal for with server name: " + serverName);
         gms = (GroupManagementService) GMSFactory.startGMSModule(serverName,
                 GROUP_NAME, GroupManagementService.MemberType.CORE, null);
         try {
-            gms.join();
+            gms.join();     //This methods creates a new group or joins to an existing one
         } catch (GMSException e) {
             logger.log(Level.SEVERE, "Error joining group" + e);
         }
     }
 
+    /**
+     * Callback method for Shoal signals
+     * @param notification
+     */
     public void processNotification(Signal notification) {
         setChanged();
         notifyObservers(notification);
     }
 
+    /**
+     * Adds observers
+     * @param o
+     */
+
     public void addObserver(Observer o) {
         logger.log(Level.INFO, "Registering for group notifications");
+
+        //addActionFactory must be called for registering to each type of message the class wants
+        //to listen to
         gms.addActionFactory(new JoinNotificationActionFactoryImpl(this));
         gms.addActionFactory(new MessageActionFactoryImpl(this), CACHE_CHANGE);
         super.addObserver(o);
     }
 
+    /**
+     * Publishes a key, value pair to the distributed cache.
+     * @param key
+     * @param value
+     */
     public void publish(String key, String value) {
         logger.log(Level.INFO, "adding cache entry: " + key + " = " + value);
         try {
@@ -49,6 +70,8 @@ public class GroupManager extends Observable implements CallBack {
             }
             cache.addToCache(GROUP_NAME, gms.getInstanceName(), key, value);
             GroupHandle gh = gms.getGroupHandle();
+
+            //notify all the members
             gh.sendMessage(CACHE_CHANGE, CACHE_CHANGE.getBytes());
         } catch (GMSException e) {
             logger.log(Level.SEVERE, "Error updating cache" + e);
@@ -56,6 +79,10 @@ public class GroupManager extends Observable implements CallBack {
 
     }
 
+    /**
+     * Returns the distributed cache
+     * @return
+     */
     public Map getCache() {
         if (cache == null) {
             cache = gms.getGroupHandle().getDistributedStateCache();
@@ -63,6 +90,10 @@ public class GroupManager extends Observable implements CallBack {
         return cache.getAllCache();
     }
 
+    /**
+     * Get Agent names
+     * @return
+     */
     public List<String> getAgent() {
         return gms.getGroupHandle().getAllCurrentMembers();
     }

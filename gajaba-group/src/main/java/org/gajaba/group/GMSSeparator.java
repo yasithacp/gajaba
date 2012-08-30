@@ -2,6 +2,9 @@ package org.gajaba.group;
 
 import com.sun.enterprise.ee.cms.core.GMSCacheable;
 
+/**
+ * This class is needed to translate internal Shoal GMSObjects to relevant data fields
+ */
 public class GMSSeparator implements KeySeparator {
 
     @Override
