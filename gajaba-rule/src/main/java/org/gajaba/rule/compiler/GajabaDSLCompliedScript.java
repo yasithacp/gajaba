@@ -29,6 +29,10 @@ public class GajabaDSLCompliedScript extends CompiledScript {
 //        return stateVariables;
 //    }
 
+    /**
+     * Get Input Variables
+     * @return
+     */
     public List<String> getInputVariables() {
         if (inputVariables == null) {
             genVarLists();
@@ -36,6 +40,9 @@ public class GajabaDSLCompliedScript extends CompiledScript {
         return inputVariables;
     }
 
+    /**
+     * Generate variable Lists
+     */
     private void genVarLists() {
         inputVariables = new ArrayList<>();
         stateVariables = new ArrayList<>();
@@ -48,6 +55,11 @@ public class GajabaDSLCompliedScript extends CompiledScript {
         }
     }
 
+    /**
+     *
+     * @param engine
+     * @param vars
+     */
     public GajabaDSLCompliedScript(DSLEngine engine, Set<Tree> vars) {
         this.engine = engine;
         this.variables = vars;

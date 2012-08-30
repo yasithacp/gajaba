@@ -46,10 +46,20 @@ public final class MemoryJavaFileManager extends ForwardingJavaFileManager<Stand
         return new StringInputJavaFileObject(uri);
     }
 
+    /**
+     * Is class Exist
+     * @param classname
+     * @return
+     */
     public boolean classExists(String classname) {
         return classNameToBytecodeMap.containsKey(classname);
     }
 
+    /**
+     * Get Byte code
+     * @param classname
+     * @return
+     */
     public byte[] getBytecode(String classname) {
         if (!classNameToBytecodeMap.containsKey(classname))
             throw new IllegalArgumentException("class " + classname + " not found in in-memory java file manager.");

@@ -11,7 +11,7 @@ public class ByteArrayOutputJavaFileObject extends SimpleJavaFileObject {
     private ByteArrayOutputStream out;
 
     /**
-     *
+     * Get byte array outputstream
      * @param uri
      */
     public ByteArrayOutputJavaFileObject(URI uri) {
