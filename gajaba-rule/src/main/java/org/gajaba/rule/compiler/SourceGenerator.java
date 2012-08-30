@@ -19,6 +19,11 @@ public class SourceGenerator {
         defaultTransformer.put(new TokenType(GajabaDSLLexer.REGEX, "REGEX"), new RegexTransformer());
     }
 
+    /**
+     * Class generator
+     * @param rootTree
+     * @return
+     */
     public String generate(Tree rootTree) {
         variables = getVariables(rootTree);
 
@@ -45,6 +50,11 @@ public class SourceGenerator {
         return builder.toString();
     }
 
+    /**
+     * Generate Sub Tree
+     * @param tree
+     * @param builder
+     */
     public void generateSubTree(Tree tree, StringBuilder builder) {
         TokenType tokenType = new TokenType(tree.getType(), tree.getText());
         TreeTransformer transformer = defaultTransformer.get(tokenType);
@@ -55,6 +65,11 @@ public class SourceGenerator {
         }
     }
 
+    /**
+     * Generate Parameters
+     * @param variables
+     * @return
+     */
     private String generateParameters(Set<Tree> variables) {
         StringBuilder stringBuilder = new StringBuilder();
         for (Iterator<Tree> iterator = variables.iterator(); iterator.hasNext(); ) {
@@ -72,15 +87,30 @@ public class SourceGenerator {
         return stringBuilder.toString();
     }
 
+    /**
+     * Get Variables
+     * @return
+     */
     public Set<Tree> getVariables() {
         return variables;
     }
 
+    /**
+     * Get Variables
+     * @param ast
+     * @return
+     */
     private static Set<Tree> getVariables(Tree ast) {
         HashSet<Tree> vars = new HashSet<Tree>();
         return getVariables(vars, ast);
     }
 
+    /**
+     * Get Variables
+     * @param vars
+     * @param ast
+     * @return
+     */
     private static Set<Tree> getVariables(Set<Tree> vars, Tree ast) {
         int childCount = ast.getChildCount();
         for (int i = 0; i < childCount; i++) {
