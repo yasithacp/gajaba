@@ -32,7 +32,7 @@ dsl_var         :   dsl_var_input | dsl_var_state | dsl_var_input_regex;
 
 dsl_var_input   :   '@' ID -> ^('input' ID);
 
-dsl_var_input_regex :	dsl_var_input '[' STRING_CONST  ']'  -> ^('regex' STRING_CONST dsl_var_input) ;
+dsl_var_input_regex :	dsl_var_input '[' STRING_CONST ',' INT  ']'  -> ^('regex' STRING_CONST INT dsl_var_input) ;
 
 dsl_var_state   :   '#' dsl_exp -> ^('state' dsl_exp);
 
@@ -44,14 +44,15 @@ ID              :   ('a'..'z'|'A'..'Z')+ ;
 
 COMMENT	        :	'//' ~('\n'|'\r')* '\r'? '\n' {$channel=HIDDEN;} ;
 
+INT 	:('0'..'1')+;
 
 STRING_CONST
 @init{StringBuilder lBuf = new StringBuilder();}
     :
-           '"'
+           '\''
            ( escaped=ESC {lBuf.append(getText());} |
-             normal=~('"'|'\\'|'\n'|'\r')     {lBuf.appendCodePoint(normal);} )*
-           '"'
+             normal=~('\''|'\\'|'\n'|'\r')     {lBuf.appendCodePoint(normal);} )*
+           '\''
            {setText(lBuf.toString());}
     ;
 
@@ -70,4 +71,6 @@ ESC
 
         )
     ;
+
+
 

@@ -7,7 +7,6 @@ public class VariableTransformer implements TreeTransformer {
 
     @Override
     public void transform(Tree tree, StringBuilder builder, SourceGenerator generator) {
-        System.out.println("var=" + tree.toStringTree());
         builder.append(tree.getChild(0).getText());
     }
 }

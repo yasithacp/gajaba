@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CacheUtil {
     public static Map<Object, String> getCacheSubMapForKey(String key, Map<Object, String> cache, KeySeparator separator) {
@@ -60,5 +62,14 @@ public class CacheUtil {
             }
         }
         return map;
+    }
+
+    public static String getRegex(String input, String regex, int group) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher m = pattern.matcher(input);
+        if (m.matches()) {
+            return m.group(group);
+        }
+        return null;
     }
 }

@@ -15,8 +15,58 @@ import static org.junit.Assert.assertEquals;
 public class DSLEngineTest {
 
     @org.junit.Test
+    public void testEvalWithRegexAndState() throws Exception {
+        String src = "#@url['/user/(\\\\w*)/.*',1]='true';";
+
+        DSLEngine engine = new DSLEngine();
+        CompiledScript compiledScript = engine.compile(src);
+
+        Bindings bindings = new SimpleBindings();
+        MockClient a = new MockClient("MOCK_GROUP", "agent2", "polly");
+        MockClient b = new MockClient("MOCK_GROUP", "agent1", "parrot");
+
+        bindings.put("agents", Arrays.asList("agent1","agent2"));
+        Map<MockClient, String> map = new HashMap<MockClient, String>();
+        map.put(a, "true");
+        map.put(b, "true");
+
+        bindings.put("cache", map);
+        bindings.put("ip", "100.10.29.13");
+        bindings.put("url", "/user/polly/main.html");
+        bindings.put("separator", new MockSeparator());
+
+        Object answer = compiledScript.eval(bindings);
+        System.out.println(answer);
+    }
+
+    @org.junit.Test
+    public void testEvalWithRegex() throws Exception {
+        String src = "@url['/user/(\\\\w*)/.*',1] = #'username';";
+
+        DSLEngine engine = new DSLEngine();
+        CompiledScript compiledScript = engine.compile(src);
+
+        Bindings bindings = new SimpleBindings();
+        MockClient a = new MockClient("MOCK_GROUP", "agent1", "username");
+        MockClient b = new MockClient("MOCK_GROUP", "agent2", "username");
+
+        bindings.put("agents", Arrays.asList("agent1","agent2"));
+        Map<MockClient, String> map = new HashMap<MockClient, String>();
+        map.put(a, "parrot");
+        map.put(b, "polly");
+
+        bindings.put("cache", map);
+        bindings.put("ip", "100.10.29.13");
+        bindings.put("url", "/user/polly/main.html");
+        bindings.put("separator", new MockSeparator());
+
+        Object answer = compiledScript.eval(bindings);
+        System.out.println(answer);
+    }
+
+    @org.junit.Test
     public void testEvalWithDoubleState() throws Exception {
-        String src = "#\"x\"=#\"a\";";
+        String src = "##'a'='1';";
 
         DSLEngine engine = new DSLEngine();
         CompiledScript compiledScript = engine.compile(src);
@@ -29,7 +79,7 @@ public class DSLEngineTest {
 
         bindings.put("agents", Arrays.asList("agent1", "agent2", "agent3"));
         Map<MockClient, String> map = new HashMap<MockClient, String>();
-        map.put(a, "1");
+        map.put(a, "x");
         map.put(a3, "1");
         map.put(c, "2.1");
         map.put(c2, "2.2");
@@ -40,13 +90,15 @@ public class DSLEngineTest {
 
         Object answer = compiledScript.eval(bindings);
         System.out.println(answer);
+
+        assertEquals(Arrays.asList("agent1"), answer);
     }
 
     @org.junit.Test
     public void testEval() throws Exception {
         System.out.println("Testing DSLEngine:eval()");
 
-        String src = "#\"serverIp\"=@ip;";
+        String src = "#'serverIp'=@ip;";
 
         DSLEngine engine = new DSLEngine();
         CompiledScript compiledScript = engine.compile(src);

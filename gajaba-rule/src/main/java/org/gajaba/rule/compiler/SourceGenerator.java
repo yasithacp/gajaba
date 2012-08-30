@@ -16,6 +16,7 @@ public class SourceGenerator {
         defaultTransformer.put(new TokenType(GajabaDSLLexer.INPUT_VAR, "INPUT_VAR"), new VariableTransformer());
         defaultTransformer.put(new TokenType(GajabaDSLLexer.STRING, "STRING"), new StringTransformer());
         defaultTransformer.put(new TokenType(GajabaDSLLexer.STATE_VAR, "STATE_VAR"), new CacheTransformer());
+        defaultTransformer.put(new TokenType(GajabaDSLLexer.REGEX, "REGEX"), new RegexTransformer());
     }
 
     public String generate(Tree rootTree) {
@@ -87,9 +88,8 @@ public class SourceGenerator {
             int type = ast.getType();
             if (type == GajabaDSLLexer.INPUT_VAR || type == GajabaDSLLexer.STATE_VAR) {
                 vars.add(ast);
-            } else {
-                getVariables(vars, child);
             }
+            getVariables(vars, child);
         }
         return vars;
     }
