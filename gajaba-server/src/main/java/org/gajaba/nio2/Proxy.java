@@ -9,17 +9,14 @@ import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public class Proxy {
-    private static Integer port = 8080;
-    private static String serverAddress = "localhost:8000";
+    private static Integer port = 8081;
+    private static int serverPort = 8000;
     private static ExecutorService es = Executors.newCachedThreadPool();
     public static final int BUFFER_SIZE = 1024;
     private static final Logger logger = Logger.getLogger("org.gajaba.Proxy");
@@ -28,6 +25,7 @@ public class Proxy {
 
     /**
      * Constructor
+     *
      * @param def RuleDefinition
      */
     public Proxy(RuleDefinition def) {
@@ -43,6 +41,7 @@ public class Proxy {
 
     /**
      * Log when error occurred
+     *
      * @param exc
      * @param attachment
      */
@@ -50,17 +49,7 @@ public class Proxy {
         logger.log(Level.WARNING, "IO failure in " + attachment, exc);
     }
 
-    /**
-     *
-     * @throws IOException
-     * @throws InterruptedException
-     */
-    public  void start() throws IOException, InterruptedException {
-        final String host;
-        final int port;
-        String[] split = serverAddress.split(":");
-        host = split[0];
-        port = Integer.parseInt(split[1]);
+    public void start() throws IOException, InterruptedException {
 
         CountDownLatch done = new CountDownLatch(1);
 
@@ -74,19 +63,68 @@ public class Proxy {
                 // accept the next connection
                 listener.accept(null, this);
 
-                final AsynchronousSocketChannel server;
-                try {
-                    server = AsynchronousSocketChannel.open();
-                    server.connect(new InetSocketAddress(host, port)).get();
-                } catch (Exception e) {
-                    error(e, "connect failed: " + serverAddress);
-                    System.exit(1);
-                    return;
-                }
-                ruleDef.evaluateRequest(client);
+//                String host = "localhost";
+                String sb = readLine(client).toString();
+                String url = getIP(sb);
+                String host = ruleDef.evaluateRequest(client,url);
 
-                read(client, server);
-                read(server, client);
+                if (host != null) {
+                    final AsynchronousSocketChannel server;
+                    try {
+                        server = AsynchronousSocketChannel.open();
+                        server.connect(new InetSocketAddress(host, serverPort)).get();
+                    } catch (Exception e) {
+                        error(e, "connect failed: " + host + ":" + port);
+                        System.exit(1);
+                        return;
+                    }
+
+                    read(sb,client, server);
+                    read(server, client);
+                } else {
+                    try {
+                        client.close();
+                    } catch (IOException e) {
+                    }
+                }
+            }
+
+            private String getIP(String sb) {
+                int space1 = sb.indexOf(" ");
+                int space2 = sb.indexOf(" ",space1+1);
+                return sb.substring(space1,space2);
+            }
+
+            private StringBuilder readLine(AsynchronousSocketChannel client) {
+                final StringBuilder builder = new StringBuilder(BUFFER_SIZE);
+                readLine(builder, client);
+                return builder;
+            }
+
+            private void readLine(StringBuilder builder, AsynchronousSocketChannel client) {
+                final ByteBuffer buffer = ByteBuffer.allocate(128);
+                Future<Integer> read = client.read(buffer);
+                for (int i = 0; i < buffer.position(); i++) {
+
+                }
+                try {
+                    read.get();
+                } catch (InterruptedException e) {
+                } catch (ExecutionException e) {
+                }
+                buffer.flip();
+                boolean needMore = true;
+                while (buffer.hasRemaining()) {
+                    char c = (char) buffer.get();
+                    if (c == '\n') {
+                        needMore = false;
+                    }
+                    builder.append(c);
+                }
+                buffer.clear();
+                if (needMore) {
+                    readLine(builder, client);
+                }
             }
 
             @Override
@@ -101,6 +139,20 @@ public class Proxy {
                     return ByteBuffer.allocate(BUFFER_SIZE);
                 }
                 return poll;
+            }
+
+            private void read(final String firstLine, final AsynchronousSocketChannel reader, AsynchronousSocketChannel writer) {
+                byte[] bytes = firstLine.getBytes();
+                final ByteBuffer buffer = ByteBuffer.allocateDirect(bytes.length);
+                buffer.put(bytes);
+                buffer.flip();
+                writer.write(buffer, buffer, new Handler<ByteBuffer>() {
+                    @Override
+                    public void completed(Integer result, ByteBuffer attachment) {
+                        buffer.clear();
+                    }
+                });
+                read(reader, writer);
             }
 
             private void read(final AsynchronousSocketChannel reader, AsynchronousSocketChannel writer) {
@@ -125,4 +177,5 @@ public class Proxy {
 
         done.await();
     }
+
 }

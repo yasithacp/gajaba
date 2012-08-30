@@ -8,4 +8,6 @@ public interface KeySeparator {
     String getMemberTokenId(Object key);
 
     Object getKey(Object key);
+
+    Object construct(String compName, String tokenId, String key);
 }

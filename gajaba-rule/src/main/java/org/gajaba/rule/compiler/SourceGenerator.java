@@ -1,9 +1,7 @@
 package org.gajaba.rule.compiler;
 
 import org.antlr.runtime.tree.Tree;
-import org.gajaba.rule.compiler.transformers.EqualOpTransformer;
-import org.gajaba.rule.compiler.transformers.TreeTransformer;
-import org.gajaba.rule.compiler.transformers.VariableTransformer;
+import org.gajaba.rule.compiler.transformers.*;
 import org.gajaba.rule.parse.GajabaDSLLexer;
 
 import java.util.*;
@@ -16,6 +14,9 @@ public class SourceGenerator {
     static {
         defaultTransformer.put(new TokenType(GajabaDSLLexer.OP, "="), new EqualOpTransformer());
         defaultTransformer.put(new TokenType(GajabaDSLLexer.INPUT_VAR, "INPUT_VAR"), new VariableTransformer());
+        defaultTransformer.put(new TokenType(GajabaDSLLexer.STRING, "STRING"), new StringTransformer());
+        defaultTransformer.put(new TokenType(GajabaDSLLexer.STATE_VAR, "STATE_VAR"), new CacheTransformer());
+        defaultTransformer.put(new TokenType(GajabaDSLLexer.REGEX, "REGEX"), new RegexTransformer());
     }
 
     public String generate(Tree rootTree) {
@@ -24,13 +25,15 @@ public class SourceGenerator {
         StringBuilder builder = new StringBuilder();
         builder.append("package org.gajaba.rule.gen;\n");
         builder.append("import java.util.*;\n");
+        builder.append("import org.gajaba.group.KeySeparator;\n");
         builder.append("import org.gajaba.rule.core.*;\n");
         builder.append("class CompiledDSLScript {\n");
-        builder.append("    public static List<String> main (List<String> clients, ");
+        builder.append("    public static List<String> main (List<String> agents, Map<Object,String> cache, KeySeparator separator ");
         builder.append(generateParameters(variables));
         builder.append("){\n");
 
-        builder.append("        List<String> accepted = new ArrayList<String>();\n");
+
+        builder.append("        List<String> accepted = new ArrayList<String>(agents);\n");
         for (int i = 0; i < rootTree.getChildCount(); i++) {
             Tree child = rootTree.getChild(i);
             generateSubTree(child, builder);
@@ -47,8 +50,8 @@ public class SourceGenerator {
         TreeTransformer transformer = defaultTransformer.get(tokenType);
         if (transformer != null) {
             transformer.transform(tree, builder, this);
-        }else{
-            System.err.print("warning: no Transformer matching the sub tree "+ tree.toStringTree());
+        } else {
+            System.err.print("warning: no Transformer matching the sub tree " + tree.toStringTree());
         }
     }
 
@@ -58,14 +61,12 @@ public class SourceGenerator {
             Tree next = iterator.next();
             String text = next.getChild(0).getText();
             if (next.getType() == GajabaDSLLexer.INPUT_VAR) {
+                stringBuilder.append(", ");
                 stringBuilder.append("String ");
                 stringBuilder.append(text);
             } else {
-                stringBuilder.append("Map<String,String> ");
-                stringBuilder.append(text);
-            }
-            if (iterator.hasNext()) {
-                stringBuilder.append(", ");
+//                stringBuilder.append("Map<Object,String> ");
+//                stringBuilder.append(text);
             }
         }
         return stringBuilder.toString();
@@ -87,9 +88,8 @@ public class SourceGenerator {
             int type = ast.getType();
             if (type == GajabaDSLLexer.INPUT_VAR || type == GajabaDSLLexer.STATE_VAR) {
                 vars.add(ast);
-            } else {
-                getVariables(vars, child);
             }
+            getVariables(vars, child);
         }
         return vars;
     }

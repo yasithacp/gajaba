@@ -9,24 +9,37 @@ public class Main {
 
     public static void main(String[] args) {
 
-        RuleDefinition def = RuleDefinition.createRuleDefinition("@ip=serverIp;");
+        GMSSeparator separator = new GMSSeparator();
+        RuleDefinition def = RuleDefinition.createRuleDefinition("#\"user\"=\"a\";",separator);
 
         Server server = new Server(def);
         server.start();
 
+        startProxy(def);
+
         Simulator simulator = new Simulator();
         try {
-            simulator.startServer(server, new GMSSeparator());
+            simulator.startServer(server, separator);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        try {
-            Proxy proxy = new Proxy(def);
-            proxy.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
+    }
+
+    private static void startProxy(final RuleDefinition def) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Proxy proxy = new Proxy(def);
+                    proxy.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        new Thread(runnable).start();
     }
 }
