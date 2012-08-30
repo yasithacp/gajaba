@@ -37,6 +37,9 @@ public class DSLEngineTest {
 
         Object answer = compiledScript.eval(bindings);
         System.out.println(answer);
+
+
+        assertEquals(Arrays.asList("agent2"), answer);
     }
 
     @org.junit.Test
@@ -62,6 +65,8 @@ public class DSLEngineTest {
 
         Object answer = compiledScript.eval(bindings);
         System.out.println(answer);
+
+        assertEquals(Arrays.asList("agent2"), answer);
     }
 
     @org.junit.Test
