@@ -36,10 +36,10 @@ public class Server implements Observer {
         manager.addObserver(this);
     }
 
-    @Override
     /**
      * Update the distributed cache
      */
+    @Override
     public void update(Observable o, Object arg) {
         System.out.println(arg);
         if (arg instanceof JoinNotificationSignal) {
@@ -71,5 +71,9 @@ public class Server implements Observer {
         def.setCache(manager.getCache());
         def.setAgents(manager.getAgent());
         ruleDef = def;
+    }
+
+    public RuleDefinition getRuleDefinition() {
+        return ruleDef;
     }
 }

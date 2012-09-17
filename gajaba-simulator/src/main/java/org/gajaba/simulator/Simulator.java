@@ -20,7 +20,6 @@ public class Simulator extends AbstractHandler {
     private HashMap<String, HttpServlet> map;
 
     /**
-     *
      * @param target
      * @param baseRequest
      * @param request
@@ -40,8 +39,12 @@ public class Simulator extends AbstractHandler {
 
         if (target.startsWith("/dynamic/")) {
             String substring = target.substring(9);
-            HttpServlet servlet = map.get(substring);;
-            servlet.service(request,response);
+            HttpServlet servlet = map.get(substring);
+            if (servlet != null) {
+                servlet.service(request, response);
+            }else{
+                response.sendError(404, "Dynamic content not available");
+            }
         } else {
             if (input == null) {
                 response.sendError(404, "Not found in jar");
@@ -56,16 +59,17 @@ public class Simulator extends AbstractHandler {
 
     /**
      * Start the server
+     *
      * @param gajabaServer Server
-     * @param separator GMSSeparator
+     * @param separator    GMSSeparator
      * @throws Exception
      */
     public void startServer(org.gajaba.server.Server gajabaServer, GMSSeparator separator) throws Exception {
-        map = new HashMap<String , HttpServlet>();
-        map.put("table", new TableServlet(gajabaServer,separator));
-        map.put("tree", new TreeJsonServlet(gajabaServer,separator));
-        map.put("rule", new RuleServlet(gajabaServer,separator));
-        map.put("ruleData", new RuleDataServlet(gajabaServer,separator));
+        map = new HashMap<String, HttpServlet>();
+        map.put("table", new TableServlet(gajabaServer, separator));
+        map.put("tree", new TreeJsonServlet(gajabaServer, separator));
+        map.put("rule", new RuleServlet(gajabaServer, separator));
+        map.put("ruleData", new RuleDataServlet(gajabaServer, separator));
 
         Server server = new Server(8080);
         server.setHandler(this);
@@ -77,6 +81,7 @@ public class Simulator extends AbstractHandler {
 
     /**
      * Get the requested target as an input stream
+     *
      * @param target String
      * @return
      * @throws IOException
@@ -98,7 +103,8 @@ public class Simulator extends AbstractHandler {
 
     /**
      * Copy the given input stream to output stream
-     * @param input InputStream
+     *
+     * @param input  InputStream
      * @param output OutputStream
      * @throws IOException
      */

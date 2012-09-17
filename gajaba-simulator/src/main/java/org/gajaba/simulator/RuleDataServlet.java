@@ -35,8 +35,7 @@ public class RuleDataServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException
     {
-
         PrintWriter out = resp.getWriter();
-        out.println("@ip=serverIp;");
+        out.println(server.getRuleDefinition().getCode());
     }
 }

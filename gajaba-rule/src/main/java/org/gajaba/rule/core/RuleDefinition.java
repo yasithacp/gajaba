@@ -20,11 +20,14 @@ public class RuleDefinition {
     private Map cache;
     private List<String> agents;
     private GMSSeparator separator;
+    private int i;
+    private String code;
 
 
-    private RuleDefinition(CompiledScript script, GMSSeparator separator) {
+    private RuleDefinition(CompiledScript script, GMSSeparator separator,String code) {
         this.script = script;
         bindings = new SimpleBindings();
+        this.code = code;
 
         cache = Collections.emptyMap();
         bindings.put("cache", cache);
@@ -38,7 +41,7 @@ public class RuleDefinition {
         try {
             Compilable compiler = (Compilable) engine;
             CompiledScript compiledScript = compiler.compile(ruleStr);
-            return new RuleDefinition(compiledScript, separator);
+            return new RuleDefinition(compiledScript, separator, ruleStr);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -55,7 +58,8 @@ public class RuleDefinition {
         try {
             List<String> answer = (List<String>) script.eval(bindings);
             if (answer.size() > 0) {
-                String ip = (String) cache.get(separator.construct(GroupManager.GROUP_NAME, answer.get(0), "ip"));
+                String roundRobinAns = answer.get(i++ % answer.size());
+                String ip = (String) cache.get(separator.construct(GroupManager.GROUP_NAME, roundRobinAns, "ip"));
                 return ip;
             }
         } catch (ScriptException e) {
@@ -73,5 +77,9 @@ public class RuleDefinition {
         agents.remove("GAJABA_SERVER");
         this.agents = agents;
         bindings.put("agents", agents);
+    }
+
+    public String getCode() {
+        return code;
     }
 }
