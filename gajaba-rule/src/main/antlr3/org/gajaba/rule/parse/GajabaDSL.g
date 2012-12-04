@@ -18,17 +18,23 @@ package org.gajaba.rule.parse;
 package org.gajaba.rule.parse;
 }
 
-
-
 dsl_doc         :   (dsl_rule ';')+ -> ^('doc' dsl_rule+);
 
-dsl_rule        :   leftvar=dsl_exp dsl_op rightvar=dsl_exp -> ^(dsl_op $leftvar $rightvar);
+dsl_rule        :   (dsl_exp dsl_op) => dsl_op_rule | dsl_statement_rule;
+
+dsl_op_rule     :   leftvar=dsl_exp dsl_op rightvar=dsl_exp -> ^(dsl_op $leftvar $rightvar);
+
+dsl_statement_rule : dsl_var_state | dsl_var_state_func;
 
 dsl_exp         :	dsl_var |  dsl_str_exp ;
 
 dsl_str_exp 	:	STRING_CONST   -> ^('string' STRING_CONST  );
 
-dsl_var         :   dsl_var_input | dsl_var_state | dsl_var_input_regex;
+dsl_var         :   dsl_var_input | dsl_var_state | dsl_var_input_regex ;
+
+dsl_var_state_func : dsl_func_name  '(' dsl_var_state ')' -> ^(dsl_func_name dsl_var_state);
+
+dsl_func_name   : 'min' | 'max';
 
 dsl_var_input   :   '@' ID -> ^('input' ID);
 
@@ -71,6 +77,8 @@ ESC
 
         )
     ;
+
+
 
 
 
