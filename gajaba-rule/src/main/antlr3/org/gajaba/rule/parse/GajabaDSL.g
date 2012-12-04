@@ -8,6 +8,7 @@ tokens {
 	STATE_VAR='state';
 	STRING='string';
 	REGEX = 'regex';
+	FUNCTION='func';
 }
 
 @header {
@@ -32,7 +33,7 @@ dsl_str_exp 	:	STRING_CONST   -> ^('string' STRING_CONST  );
 
 dsl_var         :   dsl_var_input | dsl_var_state | dsl_var_input_regex ;
 
-dsl_var_state_func : dsl_func_name  '(' dsl_var_state ')' -> ^(dsl_func_name dsl_var_state);
+dsl_var_state_func : dsl_func_name  '(' dsl_var_state ')' ->  ^('func' dsl_func_name dsl_var_state);
 
 dsl_func_name   : 'min' | 'max';
 
