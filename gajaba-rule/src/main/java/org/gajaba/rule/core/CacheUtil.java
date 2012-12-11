@@ -21,6 +21,11 @@ public class CacheUtil {
         return map;
     }
 
+    public static String getCacheValue(String tokenId, String key, Map<Object, String> cache, KeySeparator separator) {
+        Object keyEntryWithValue = separator.construct(null, tokenId, key);
+        return cache.get(keyEntryWithValue);
+    }
+
     public static Map<Object, String> getCacheSubMapForKey(Map<Object, String> keys, Map<Object, String> cache, KeySeparator separator) {
         ConcurrentHashMap<Object, String> map = new ConcurrentHashMap<>();
         for (Map.Entry<Object, String> keyEntry : keys.entrySet()) {

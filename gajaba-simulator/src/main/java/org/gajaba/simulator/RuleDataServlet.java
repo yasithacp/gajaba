@@ -10,13 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-/**
- * Created with IntelliJ IDEA.
- * User: yasitha
- * Date: 8/29/12
- * Time: 9:11 PM
- * To change this template use File | Settings | File Templates.
- */
 public class RuleDataServlet extends HttpServlet {
 
     private Server server;

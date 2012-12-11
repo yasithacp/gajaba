@@ -4,13 +4,30 @@ import org.gajaba.group.GMSSeparator;
 import org.gajaba.nio2.Proxy;
 import org.gajaba.rule.core.RuleDefinition;
 import org.gajaba.simulator.Simulator;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
 
 public class Main {
 
+    @Option(name="-r",usage="rules to executed")
+    private String rule = ";";
+
     public static void main(String[] args) {
+        new Main().runMain(args);
+    }
+
+    private void runMain(String[] args) {
+        CmdLineParser parser = new CmdLineParser(this);
+        try {
+            parser.parseArgument(args);
+            System.out.println(rule);
+        } catch (CmdLineException e) {
+            e.printStackTrace();
+        }
 
         GMSSeparator separator = new GMSSeparator();
-        RuleDefinition def = RuleDefinition.createRuleDefinition("#@url['/user/(\\\\w*)/.*',1]='true';",separator);
+        RuleDefinition def = RuleDefinition.createRuleDefinition(rule, separator);
 
         Server server = new Server(def);
         server.start();
@@ -23,8 +40,6 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     private static void startProxy(final RuleDefinition def) {
@@ -42,4 +57,5 @@ public class Main {
 
         new Thread(runnable).start();
     }
+
 }

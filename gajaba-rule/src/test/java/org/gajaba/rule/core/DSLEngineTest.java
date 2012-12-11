@@ -43,6 +43,34 @@ public class DSLEngineTest {
     }
 
     @org.junit.Test
+    public void testEvalWithFunction() throws Exception {
+        String src = "min(#'load');";
+
+        DSLEngine engine = new DSLEngine();
+        CompiledScript compiledScript = engine.compile(src);
+
+        Bindings bindings = new SimpleBindings();
+        MockClient a = new MockClient("MOCK_GROUP", "agent1", "load");
+        MockClient b = new MockClient("MOCK_GROUP", "agent2", "load");
+        MockClient c = new MockClient("MOCK_GROUP", "agent3", "load");
+
+        bindings.put("agents", Arrays.asList("agent1","agent2","agent3","agent4"));
+        Map<MockClient, String> map = new HashMap<MockClient, String>();
+        map.put(a, "c");
+        map.put(b, "b");
+        map.put(c, "a");
+
+        bindings.put("cache", map);
+        bindings.put("ip", "100.10.29.13");
+        bindings.put("url", "/user/polly/main.html");
+        bindings.put("separator", new MockSeparator());
+
+        Object answer = compiledScript.eval(bindings);
+
+        assertEquals(Arrays.asList("agent3"), answer);
+    }
+
+    @org.junit.Test
     public void testEvalWithRegex() throws Exception {
         String src = "@url['/user/(\\\\w*)/.*',1] = #'username';";
 

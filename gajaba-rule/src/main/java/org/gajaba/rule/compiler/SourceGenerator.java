@@ -17,6 +17,7 @@ public class SourceGenerator {
         defaultTransformer.put(new TokenType(GajabaDSLLexer.STRING, "STRING"), new StringTransformer());
         defaultTransformer.put(new TokenType(GajabaDSLLexer.STATE_VAR, "STATE_VAR"), new CacheTransformer());
         defaultTransformer.put(new TokenType(GajabaDSLLexer.REGEX, "REGEX"), new RegexTransformer());
+        defaultTransformer.put(new TokenType(GajabaDSLLexer.FUNCTION, "FUNCTION"), new FunctionTransformer());
     }
 
     /**
@@ -30,6 +31,7 @@ public class SourceGenerator {
         StringBuilder builder = new StringBuilder();
         builder.append("package org.gajaba.rule.gen;\n");
         builder.append("import java.util.*;\n");
+        builder.append("import org.gajaba.rule.compiler.functions.*;\n");
         builder.append("import org.gajaba.group.KeySeparator;\n");
         builder.append("import org.gajaba.rule.core.*;\n");
         builder.append("class CompiledDSLScript {\n");
