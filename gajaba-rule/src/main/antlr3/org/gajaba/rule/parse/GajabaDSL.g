@@ -4,6 +4,7 @@ options { output=AST; }
 
 tokens {
 	DOC='doc';
+	SET='set';
 	INPUT_VAR='input';
 	STATE_VAR='state';
 	STRING='string';
@@ -19,7 +20,11 @@ package org.gajaba.rule.parse;
 package org.gajaba.rule.parse;
 }
 
-dsl_doc         :   (dsl_rule ';')+ -> ^('doc' dsl_rule+);
+
+
+dsl_doc         :   ( '(' dsl_set ')' )* -> ^('doc' dsl_set*) ;
+
+dsl_set	        :   (dsl_rule ';')+ -> ^('set' dsl_rule+);
 
 dsl_rule        :   (dsl_exp dsl_op) => dsl_op_rule | dsl_statement_rule;
 

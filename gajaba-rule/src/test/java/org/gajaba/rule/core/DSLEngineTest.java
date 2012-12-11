@@ -16,7 +16,7 @@ public class DSLEngineTest {
 
     @org.junit.Test
     public void testEvalWithRegexAndState() throws Exception {
-        String src = "#@url['/user/(\\\\w*)/.*',1]='true';";
+        String src = "(#@url['/user/(\\\\w*)/.*',1]='true';)";
 
         DSLEngine engine = new DSLEngine();
         CompiledScript compiledScript = engine.compile(src);
@@ -44,7 +44,7 @@ public class DSLEngineTest {
 
     @org.junit.Test
     public void testEvalWithFunction() throws Exception {
-        String src = "min(#'load');";
+        String src = "(min(#'load');)";
 
         DSLEngine engine = new DSLEngine();
         CompiledScript compiledScript = engine.compile(src);
@@ -70,9 +70,40 @@ public class DSLEngineTest {
         assertEquals(Arrays.asList("agent3"), answer);
     }
 
+
+    @org.junit.Test
+    public void testEvalWithSets() throws Exception {
+        String src = "(#'name'='a';)(#'name'='c';)";
+
+        DSLEngine engine = new DSLEngine();
+        CompiledScript compiledScript = engine.compile(src);
+
+        Bindings bindings = new SimpleBindings();
+        MockClient a = new MockClient("MOCK_GROUP", "agent1", "name");
+        MockClient b = new MockClient("MOCK_GROUP", "agent2", "name");
+        MockClient c = new MockClient("MOCK_GROUP", "agent3", "name");
+
+        bindings.put("agents", Arrays.asList("agent1","agent2","agent3","agent4"));
+        Map<MockClient, String> map = new HashMap<MockClient, String>();
+        map.put(a, "a");
+        map.put(b, "b");
+        map.put(c, "c");
+
+        bindings.put("cache", map);
+        bindings.put("ip", "100.10.29.13");
+        bindings.put("url", "/user/polly/main.html");
+        bindings.put("separator", new MockSeparator());
+
+        Object answer = compiledScript.eval(bindings);
+        System.out.println(answer);
+
+        assertEquals(Arrays.asList("agent1","agent3"), answer);
+    }
+
+
     @org.junit.Test
     public void testEvalWithRegex() throws Exception {
-        String src = "@url['/user/(\\\\w*)/.*',1] = #'username';";
+        String src = "(@url['/user/(\\\\w*)/.*',1] = #'username';)";
 
         DSLEngine engine = new DSLEngine();
         CompiledScript compiledScript = engine.compile(src);
@@ -99,7 +130,7 @@ public class DSLEngineTest {
 
     @org.junit.Test
     public void testEvalWithDoubleState() throws Exception {
-        String src = "##'a'='1';";
+        String src = "(##'a'='1';)";
 
         DSLEngine engine = new DSLEngine();
         CompiledScript compiledScript = engine.compile(src);
@@ -131,7 +162,7 @@ public class DSLEngineTest {
     public void testEval() throws Exception {
         System.out.println("Testing DSLEngine:eval()");
 
-        String src = "#'serverIp'=@ip;";
+        String src = "(#'serverIp'=@ip;)";
 
         DSLEngine engine = new DSLEngine();
         CompiledScript compiledScript = engine.compile(src);

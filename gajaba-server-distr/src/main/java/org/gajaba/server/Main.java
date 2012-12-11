@@ -10,7 +10,7 @@ import org.kohsuke.args4j.Option;
 
 public class Main {
 
-    @Option(name="-r",usage="rules to executed")
+    @Option(name="-r",usage="rules to be executed")
     private String rule = ";";
 
     public static void main(String[] args) {

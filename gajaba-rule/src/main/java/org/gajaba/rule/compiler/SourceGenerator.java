@@ -35,18 +35,41 @@ public class SourceGenerator {
         builder.append("import org.gajaba.group.KeySeparator;\n");
         builder.append("import org.gajaba.rule.core.*;\n");
         builder.append("class CompiledDSLScript {\n");
+
+
+        for (int i = 0; i < rootTree.getChildCount(); i++) {
+            Tree set = rootTree.getChild(i);
+            builder.append("    public static List<String> getSet");
+            builder.append(i);
+            builder.append("AcceptList (List<String> agents, Map<Object,String> cache, KeySeparator separator ");
+            builder.append(generateParameters(variables));
+            builder.append("){\n");
+            builder.append("        List<String> accepted = new ArrayList<String>(agents);\n");
+            for (int j = 0; j < set.getChildCount(); j++) {
+                Tree rule = set.getChild(j);
+                generateSubTree(rule, builder);
+            }
+            builder.append("        return (accepted);\n");
+            builder.append("    }\n");
+        }
+
+
         builder.append("    public static List<String> main (List<String> agents, Map<Object,String> cache, KeySeparator separator ");
         builder.append(generateParameters(variables));
         builder.append("){\n");
-
-
-        builder.append("        List<String> accepted = new ArrayList<String>(agents);\n");
+        builder.append("        Set<String> accepted = new TreeSet<String>();\n");
         for (int i = 0; i < rootTree.getChildCount(); i++) {
-            Tree child = rootTree.getChild(i);
-            generateSubTree(child, builder);
+            TreeSet<String> accepted = new TreeSet<String>();
+
+            builder.append("        accepted.addAll(getSet");
+            builder.append(i);
+            builder.append("AcceptList(agents, cache, separator");
+            builder.append(generateParameterValues(variables));
+            builder.append("));\n");
         }
-        builder.append("        return (accepted);\n");
+        builder.append("        return (new ArrayList<String>(accepted));\n");
         builder.append("    }\n");
+
         builder.append("}\n");
         System.out.println(builder.toString());
         return builder.toString();
@@ -80,6 +103,22 @@ public class SourceGenerator {
             if (next.getType() == GajabaDSLLexer.INPUT_VAR) {
                 stringBuilder.append(", ");
                 stringBuilder.append("String ");
+                stringBuilder.append(text);
+            } else {
+//                stringBuilder.append("Map<Object,String> ");
+//                stringBuilder.append(text);
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    private String generateParameterValues(Set<Tree> variables) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Iterator<Tree> iterator = variables.iterator(); iterator.hasNext(); ) {
+            Tree next = iterator.next();
+            String text = next.getChild(0).getText();
+            if (next.getType() == GajabaDSLLexer.INPUT_VAR) {
+                stringBuilder.append(", ");
                 stringBuilder.append(text);
             } else {
 //                stringBuilder.append("Map<Object,String> ");
